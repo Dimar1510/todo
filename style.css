@@ -1,0 +1,440 @@
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    list-style: none;
+
+}
+
+:root {
+    --clr-white: #fdf2f8;
+    --clr-light: #eeeeee;
+    --clr-dark: #c38d9e;
+    --clr-accent: #c38d9e;;
+}
+
+body {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    height: 100vmin;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #5eb0a5;
+}
+
+.main-container {
+    width: 1000px;
+    height: 600px;
+    max-height: 600px;
+    border: 1px solid black;
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    grid-template-rows: auto 1fr;
+   
+}
+
+.header {
+    grid-column: 1/3;
+    grid-row: 1/2;
+    background-color: var(--clr-dark);
+    color: white;
+    padding: 0.5rem;
+    text-align: center;
+}
+
+.header span {
+    font-size: 2rem;
+}
+
+button {
+    text-transform: uppercase;
+    font-size: 0.6rem;
+    padding: 0.3rem 0.5rem;
+    border: 1px solid var(--clr-dark);
+    background: none;
+    color: var(--clr-dark);
+    font-weight: bold;
+    border-radius: 0.2rem;
+    cursor: pointer;
+    transition: 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button:hover {
+    background-color: var(--clr-dark);
+    color: white;
+}
+
+/* SIDEBAR ---------------------------------- */
+
+.sidebar {
+    grid-column: 1/2;
+    grid-row: 2/3;
+    background-color: var(--clr-light);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 2rem;
+    font-size: 1.2rem;
+    border-right: 2px solid var(--clr-dark);
+
+}
+
+.menu-projects {
+    max-height: 12rem;
+    overflow-y: auto;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+   
+}
+
+
+.menu-projects::-webkit-scrollbar {
+    width: 6px;
+  }
+.menu-projects::-webkit-scrollbar-track {
+    background: none;
+  }
+  
+.menu-projects::-webkit-scrollbar-thumb {
+    background: var(--clr-accent);
+    border-radius: 5px;
+  }
+  
+.menu-projects::-webkit-scrollbar-thumb:hover {
+    background: rgba(80, 31, 58, 0.8);
+  }
+
+.sidebar li:not(.add-project-item, .item-projects) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.project-item {
+    margin-block: 0.5rem;
+}
+
+.item-name.active {
+    color: var(--clr-accent);
+    font-weight: bolder;
+}
+
+.sidebar li:not(.item-projects):hover {
+    font-weight: bolder;
+    cursor: pointer;
+}
+
+.item-counter.empty {
+    display: none;
+}
+
+.project-item > div:first-child {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.project-item span {
+    display: none;
+    font-size: 1.2em;
+    color: var(--clr-accent);
+    
+}
+
+.project-item:hover span{
+    display: inline;
+}
+
+
+
+.item-counter {
+    height: 18px;
+    width: 18px;
+    background-color: var(--clr-dark);
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 100;
+    font-size: 0.7rem;
+    
+}
+
+.item-counter.active {
+    display: flex;
+}
+
+.menu-dates {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+ul > ul {
+    padding-left: 1rem;
+    font-size: 1rem;
+}
+
+.add-project-item {
+    display: flex;
+    flex-direction: column;
+    padding-left: 1rem;
+    width: fit-content; 
+}
+
+.add-project-item button{
+    font-size: 0.8rem;
+}
+
+
+
+.form-add-project input {
+    width: 100%;
+    padding: 5px;
+}
+
+.form-add-project .btn-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+}
+
+.add-project, .form-add-project {
+    display: none;
+    flex-direction: column;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+
+.add-project.active, .form-add-project.active {
+    display: flex;
+}
+
+/* #btnCreate {
+    width: 3rem;
+    height: 3rem;
+    text-transform: uppercase;
+    font-weight: bolder;
+    background-color: var(--clr-dark);
+    color: white;
+    cursor: pointer;
+    font-size: 3rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 100;
+} */
+
+/* DIALOG --------------------------------*/
+
+dialog {
+    margin: auto;
+    min-width: 250px;
+    width: 50%;
+    max-width: 450px;
+    padding: 1rem 1.5rem;
+    border: none;
+    box-shadow: 0 2rem 4rem rgba(0, 0, 0, 0.6);
+}
+
+dialog[open] {
+    animation: popout 0.3s ease-in-out;
+}
+
+dialog::backdrop {
+    backdrop-filter: blur(0.5rem);
+    opacity: 1;
+}
+
+dialog input, dialog select, dialog textarea {
+    padding: 0.2rem 1ch;
+}
+
+dialog textarea {
+    resize: none;
+}
+
+
+dialog button {
+    padding-block: 1rem;
+    font-size: 0.8rem;
+}
+
+dialog select option[value = 'high']
+{
+  color: red;
+}
+dialog select option[value = 'medium']
+{
+  color: orange;
+}
+dialog select option[value = 'low']
+{
+  color: green;
+}
+
+
+
+@keyframes popout{
+0%{
+    scale: 0;
+}
+100%{
+    scale: 100%;
+}
+}
+
+.dialog-header {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+    align-items: center;
+    color: var(--clr-dark);
+}
+
+.dialog-header > span {
+    font-size: 1.5em;
+}
+
+.dialog-header > span:hover {
+    font-weight: bolder;
+    cursor: pointer;
+}
+
+dialog form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 1rem;
+    color: var(--clr-dark)
+}
+
+.details-grid li:not(.detail) {
+    font-weight: bold;
+}
+
+/* CONTENT ---------------------------------- */
+
+.content {
+    grid-column: 2/3;
+    grid-row: 2/3;
+    background-color: var(--clr-white);
+    padding: 1rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow-y: auto;
+}
+
+.content > h3 {
+    color: var(--clr-accent);
+    text-align: center;
+}
+
+.task-card {
+    width: 100%;
+    background-color: var(--clr-light);
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    align-items: center;
+    position: relative;
+}
+
+#btnCreate {
+    font-size: 0.8rem;
+}
+
+.task-card:has(#btnCreate) {
+    background: none;
+}
+
+.task-card > div {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.task-card input[type = "checkbox"] {
+    appearance: none;
+    background: none;
+    font: inherit;
+    color: currentColor;
+    width: 1em;
+    height: 1em;
+    border: 1px solid var(--clr-accent);
+    border-radius: 0.15em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.task-card input[type="checkbox"]::before {
+    content: "";
+    width: 0.8em;
+    height: 0.8em;
+    transform: scale(0);
+    transition: 0.1s transform ease-in-out;
+    background: var(--clr-accent);
+    transform-origin: bottom left;
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+   
+}
+
+.task-card input[type="checkbox"]:checked::before {
+    transform: scale(1);
+}
+
+.card-date {
+    font-size: 0.7rem;
+    padding-inline: 1rem;
+}
+
+
+.task-card:not(.task-card:has(#btnCreate)) .material-symbols-outlined{
+    cursor: pointer;
+    scale: 0.8;
+    transition: 0.3s ease-in;
+}
+
+.task-card:not(.task-card:has(#btnCreate)) .material-symbols-outlined:hover{
+    color: var(--clr-accent)
+}
+
+
+.task-card.high {
+    border-left: 5px solid red;
+}
+
+.task-card.medium {
+    border-left: 5px solid orange;
+}
+
+.task-card.low {
+    border-left: 5px solid green;
+}
+
+.task-card.done {
+    color: #b5b5b5;
+}
+
+.task-card.done button {
+    color: #b5b5b5;
+    border-color: #b5b5b5;
+}
+
+.task-card.done button:hover{
+    color: white;
+    background-color: #b5b5b5;
+}
