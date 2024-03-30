@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TO-DO</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="header">
+            <h1>
+                <span class="material-symbols-outlined">
+                edit_note
+                </span>
+                TO-DO
+            </h1>
+        </div>
+        <div class="sidebar">
+            <div class="menu">
+                <ul class="menu-dates">
+                    <li class="item-home">
+                        <div class="item-name">All tasks</div>
+                        <div class="item-counter"></div>
+                    </li>
+                    <li class="item-today">
+                        <div class="item-name">Today</div>
+                        <div class="item-counter"></div>
+                    </li>
+                    <li class="item-week">
+                        <div class="item-name">This week</div>
+                        <div class="item-counter"></div>
+                    </li>
+                    <li class="item-projects">
+                        <div class="item-name">Projects</div>
+                        
+                    </li>
+                    <ul class="menu-projects">
+                        <!-- <li class="project-item">
+                            <div>
+                                <div class="item-name">Work</div>
+                                <span class="material-symbols-outlined">
+                                    delete
+                                    </span>
+                                
+                            </div>
+                            <div class="item-counter"></div>
+                        </li> -->
+                    </ul>
+                        <li class="add-project-item">
+                            <button class="add-project active">+ Add project</button>
+                            <div class="form-add-project">
+                                    <input type="text" id="newProjectInput" placeholder="Project title">
+                                    <div class="btn-group">
+                                        <button id="btnCreateProject">Add</button>
+                                        <button id="btnCancelCreateProject">Cancel</button>
+                                    </div>
+                            </div>
+                        </li>
+                    
+                    <li class="item-notes">
+                        <div class="item-name">Notes</div>
+                    </li>
+                </ul>
+            </div>
+            <!-- <button type="button" id="btnCreate">+</button> -->
+        </div>
+        <div class="content">
+            <!-- <div class="task-card">
+                <div class="card-left">
+                    <input type="checkbox" name="card-checkbox">
+                    <span>TASK</span>
+                </div>
+                <div class="card-right">
+                    <button>details</button>
+                    <div class="card-date">DATE</div>
+                    <span class="material-symbols-outlined">edit_square</span>
+                    <span class="material-symbols-outlined">delete</span>
+                </div>
+            </div> -->
+       
+        </div>
+    </div>
+    <dialog class="dialog-create">
+        <div class="dialog-header">
+            <h2></h2>
+            <span>×</span>
+        </div>
+        <div class="dialog-content">
+            <form class="form" id="create-task" action="" method="dialog">
+                <input type="text" name="title" id="form-title" placeholder="Title" autofocus>
+                <textarea name="details" id="form-details" cols="30" rows="3" maxlength="144" placeholder="Details"></textarea>
+                <input type="date" name="date" id="form-date">
+                <select name="priority" id="priority-select">
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
+                <button type="submit" id="btnSubmit"></button>
+            </form>
+        </div>
+    </dialog>
+    <dialog class="dialog-details">
+        <div class="dialog-header">
+            <h4>Task</h4>
+            <span>×</span>
+        </div>
+        <ul class="details-grid">
+            <li>Project:</li>
+            <li id="details-project" class="detail">name</li>
+            <li>Due Date:</li>
+            <li id="details-date" class="detail">date</li>
+            <li>Priority:</li>
+            <li id="details-priority" class="detail">prio</li>
+            <li>Details:</li>
+            <li id="details-text" class="detail">text</li>
+        </ul>
+    </dialog>
+    <script src="main.js"></script>
+</body>
+</html>
