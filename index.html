@@ -37,21 +37,13 @@
                         
                     </li>
                     <ul class="menu-projects">
-                        <!-- <li class="project-item">
-                            <div>
-                                <div class="item-name">Work</div>
-                                <span class="material-symbols-outlined">
-                                    delete
-                                    </span>
-                                
-                            </div>
-                            <div class="item-counter"></div>
-                        </li> -->
                     </ul>
                         <li class="add-project-item">
                             <button class="add-project active">+ Add project</button>
                             <div class="form-add-project">
-                                    <input type="text" id="newProjectInput" placeholder="Project title">
+                                    <input type="text" id="newProjectInput" placeholder="New project name">
+                                    <div class="color-selector">
+                                    </div>
                                     <div class="btn-group">
                                         <button id="btnCreateProject">Add</button>
                                         <button id="btnCancelCreateProject">Cancel</button>
@@ -64,22 +56,9 @@
                     </li>
                 </ul>
             </div>
-            <!-- <button type="button" id="btnCreate">+</button> -->
         </div>
         <div class="content">
-            <!-- <div class="task-card">
-                <div class="card-left">
-                    <input type="checkbox" name="card-checkbox">
-                    <span>TASK</span>
-                </div>
-                <div class="card-right">
-                    <button>details</button>
-                    <div class="card-date">DATE</div>
-                    <span class="material-symbols-outlined">edit_square</span>
-                    <span class="material-symbols-outlined">delete</span>
-                </div>
-            </div> -->
-       
+           
         </div>
     </div>
     <dialog class="dialog-create">
@@ -92,12 +71,11 @@
                 <input type="text" name="title" id="form-title" placeholder="Title" autofocus>
                 <textarea name="details" id="form-details" cols="30" rows="3" maxlength="144" placeholder="Details"></textarea>
                 <input type="date" name="date" id="form-date">
-                <select name="priority" id="priority-select">
-                    <option value="high">High</option>
-                    <option value="medium">Medium</option>
-                    <option value="low">Low</option>
-                </select>
-                <button type="submit" id="btnSubmit"></button>
+                <div class="important-task">
+                    <label for="priority-select">Important</label>
+                    <input type="checkbox" name="priority" id="priority-select">
+                    <button type="submit" id="btnSubmit"></button>    
+                </div>
             </form>
         </div>
     </dialog>
