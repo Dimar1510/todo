@@ -20,7 +20,7 @@ const storage = function() {
 export const projectList = function () {
   if (localStorage.length === 0) {
     const list = new ProjectList();
-    const home = new Project('default');
+    const home = new Project('Default');
     list.addProject(home);
     return list;
   }
@@ -36,13 +36,11 @@ if (localStorage.length === 0) {
 }
 Render.project();
 
-
-
-
-export function createProject(name) {
-  const newProject = new Project(name);
+export function createProject(name, color) {
+  const newProject = new Project(name, color);
   projectList.addProject(newProject);
-  storage.save()
+  storage.save();
+  console.log(newProject.color)
   Render.project();
   const menuProjects = document.querySelector('.menu-projects');
   menuProjects.scrollTop = menuProjects.scrollHeight;
@@ -50,6 +48,13 @@ export function createProject(name) {
 
 export function openProject(project) {
   projectList.current = project;
+  Render.project();
+}
+
+export function editProject(project, name, color) {
+  project.name = name;
+  project.color = color;
+  storage.save();
   Render.project();
 }
 
@@ -95,21 +100,15 @@ export function getUndoneTasks(project) {
 
 function testContent() {
   const today = new Date()
-  createTask('Look around', new Date(), 'low', 'take your time to get familiar with this list');
-  createTask('Create a project', new Date(), 'low', 'create a project and begin to track tasks or create a new task on a default page');
-  createProject('Work');
-  createTask('Learn JavaScript','', 'high', 'need to keep grinding');
-  createTask('Quit your job', new Date(1711560618000), 'medium', 'how else would you learn');
-  createProject('Gym');
-  createTask('Leg day', today.setDate(today.getDate() + 1), 'high', '');
-  createTask('Chest day', today.setDate(today.getDate() + 2), 'medium', '');
-  createTask('Back day', today.setDate(today.getDate() + 3), 'medium', '');
-  createTask('Arms day', today.setDate(today.getDate() + 4), 'low', '');
+  createTask('Look around', new Date(), false, 'first time here?');
+  createTask('Create a project', new Date(), false, 'create a project and begin to track tasks or create a new task on a default page');
+  createProject('Work', 'blue');
+  createTask('Learn JavaScript','', true, 'need to keep grinding');
+  createTask('Quit your job', new Date(1711560618000), false, 'how else would you learn');
+  createProject('Gym', 'orange');
+  createTask('Leg day', today.setDate(today.getDate() + 1), true, '');
+  createTask('Chest day', today.setDate(today.getDate() + 2), false, '');
+  createTask('Back day', today.setDate(today.getDate() + 3), false, '');
+  createTask('Arms day', today.setDate(today.getDate() + 4), true, '');
   projectList.current = projectList.projects[0];
 }
-//Test card
-// for (let i = 0; i < 2; i++) {
-//   createTask('task', '1', 'low', 'details', false, currentProject);
-//   createTask('task2','1', 'high', 'details', false, currentProject);
-  
-//   }

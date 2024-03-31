@@ -1,4 +1,4 @@
-import { projectList, createProject, openProject, deleteProject, createTask, deleteTask, editTask, checkTask, getUndoneTasks} from ".";
+import { projectList, createProject, openProject, deleteProject, createTask, deleteTask, editTask, checkTask, getUndoneTasks, editProject} from ".";
 import { format, compareAsc } from "date-fns";
 
 export const Render = function() {
@@ -10,7 +10,18 @@ export const Render = function() {
         btnCreateTask.id = "btnCreate";
         btnCreateTask.onclick = () => showDialog.create();
         btnCreateTask.innerHTML = '<span class="material-symbols-outlined">add</span> <span>Add task</span>'
-        card.append(btnCreateTask);
+        card.append(btnCreateTask)
+
+        const btnEditProject = document.createElement('button');
+        btnEditProject.innerHTML = '<span class="material-symbols-outlined">delete</span> <span>Delete project</span>'
+        btnEditProject.onclick = () => {
+        for (let project of projectList.projects) {
+                if (project === projectList.current) {
+                    deleteProject(project)
+                }
+            }
+        }
+        if (!isDefault()) card.append(btnEditProject)
         content.append(card);
     }
 
@@ -57,10 +68,21 @@ export const Render = function() {
 
     const sidebar = function () {
         const menuProjects = document.querySelector('.menu-projects');
-        const menuItemHome = document.querySelector('.item-home > .item-name');
-        const menuItemToday = document.querySelector('.item-today > .item-name');
-        const menuItemWeek = document.querySelector('.item-week > .item-name');
+        const menuItemHome = document.querySelector('.item-home');
+        const menuItemToday = document.querySelector('.item-today');
+        const menuItemWeek = document.querySelector('.item-week');
         const items = document.querySelectorAll('.item-name');
+        const notes = document.querySelector('.item-notes')
+
+        // implement notes later
+        notes.onclick = () => {
+            projectList.current = 'notes'
+            console.log(projectList.current)
+            content.innerHTML = '<h3>Page is under construction<br>Check again later!</h3>';
+            sidebar();
+        }
+        
+        // end
 
         items.forEach(item => {
             item.classList.remove('active');
@@ -69,11 +91,13 @@ export const Render = function() {
         if (typeof(projectList.current) === 'string') { 
             document.querySelector(`.item-${projectList.current} > .item-name`).classList.add('active') 
         }
-        if (isDefault()) menuItemHome.classList.add('active');
+        if (isDefault()) menuItemHome.firstElementChild.classList.add('active');
 
         menuItemHome.onclick = all;
         menuItemToday.onclick = today;
         menuItemWeek.onclick = week;
+
+
         menuProjects.innerHTML = '';
         for (let project of projectList.projects) {
             menuProjects.append(createProjectItem(project));
@@ -82,7 +106,7 @@ export const Render = function() {
         // hide the 'default' project
         menuProjects.removeChild(menuProjects.firstElementChild);
         
-        console.log(`You are now in project "${projectList.current}"`)
+        // console.log(`You are now in project ${projectList.current}"`)
     };
 
     const project = function() {
@@ -185,54 +209,132 @@ function createProjectItem(project) {
     const itemName = createDiv('item-name');
     itemName.textContent = project.name;
     project === projectList.current ? itemName.classList.add('active') : itemName.classList.remove('active');
-    const removeIcon = document.createElement('span');
-    removeIcon.classList.add("material-symbols-outlined");
-    removeIcon.textContent = 'delete';
+
+    const editIcon = document.createElement('span');
+    editIcon.classList.add("material-symbols-outlined");
+    editIcon.textContent = 'edit_square';
+
+    // const removeIcon = document.createElement('span');
+    // removeIcon.classList.add("material-symbols-outlined");
+    // removeIcon.textContent = 'delete';
+
     const itemCounter = createDiv('item-counter');
     itemCounter.textContent = getUndoneTasks(project);
     itemCounter.textContent == '0' ? itemCounter.classList.remove('acitve') :
                                      itemCounter.classList.add('active')
-    divLeft.append(itemName, removeIcon);
+    divLeft.append(itemName, editIcon);
     divRight.append(itemCounter);
+    projectItem.style.borderLeftColor = project.color;
     projectItem.append(divLeft, divRight);
     projectItem.addEventListener('click',() => {
         openProject(project)
     });
-    removeIcon.addEventListener('click', (e) => {
+    editIcon.addEventListener('click', (e) => {
         e.stopPropagation()
-        deleteProject(project)
-        console.log(e.target)
-    });
+        projectCreation.show(project)
+    })
+    // removeIcon.addEventListener('click', (e) => {
+    //     e.stopPropagation()
+    //     deleteProject(project)
+    // });
     return projectItem;
 }
 
-(function() {
+// project creation --------------------------------------------------
+
+const projectCreation = (function() {
     const btnAddProject = document.querySelector('.add-project');
     const btnCancelCreateProject = document.querySelector('#btnCancelCreateProject');
     const formAddProject = document.querySelector('.form-add-project');
     const newProjectInput = document.querySelector('#newProjectInput');
     const btnCreateProject = document.querySelector('#btnCreateProject');
+    let projectColor = 'black'
+    const iconChecked = `<span class="material-symbols-outlined">done</span>`;
 
-    const show = function() {
+    const show = function(project) {
         btnAddProject.classList.remove('active');
         formAddProject.classList.add('active');
+        colorPalette();
         newProjectInput.focus();
+        if (project) {
+            edit(project)
+        } else create();
     }
     const cancel = function() {
         btnAddProject.classList.add('active');
         formAddProject.classList.remove('active');
         resetInput();
     }
+
+    const edit = function(project) {
+        btnCreateProject.textContent = 'Confirm';
+        newProjectInput.value = project.name;
+        const colorCard = document.getElementById(project.color);
+        clearCheck()
+        colorCard.innerHTML = iconChecked;
+        btnCreateProject.onclick = () => {
+            if (newProjectInput.value.trim() === '') {
+                newProjectInput.style.borderColor = 'red';
+                setTimeout(() => newProjectInput.style.borderColor = 'black', 1500)
+                return;
+            }
+            editProject(project, newProjectInput.value.trim(), projectColor)
+            cancel();
+        }
+    }
+
+    const create = function() {
+        btnCreateProject.textContent = 'Add';
+        btnCreateProject.onclick = () => {
+            if (newProjectInput.value.trim() === '') {
+                newProjectInput.style.borderColor = 'red';
+                setTimeout(() => newProjectInput.style.borderColor = 'black', 1500)
+                return;
+            }
+            createProject(newProjectInput.value.trim(), projectColor);
+            cancel();
+        }
+    }
+
     const resetInput = function() {
         newProjectInput.value = '';
     }
 
+    function colorPalette(){
+        const colorArray = ['black','red','blue','green','orange','purple','aqua','maroon'];
+        const colorSelector = document.querySelector('.color-selector');
+        colorSelector.innerHTML = "";
+        for (let color of colorArray) {
+            const colorCard = createDiv('color-card');
+            colorCard.id = color;
+            colorCard.style.backgroundColor = color;
+            if (color === 'black') colorCard.innerHTML = iconChecked;
+            colorCard.onclick = (e) => {
+                checkColor(e.target);
+            }
+            colorSelector.appendChild(colorCard);
+        }
+    }
+
+    function clearCheck() {
+        const colorCards = document.querySelectorAll('.color-card');
+        colorCards.forEach(card => {
+            card.innerHTML = ''
+        });
+    }
+
+    function checkColor(pickedCard) {
+        if (pickedCard.id === '') return;
+        clearCheck()
+        pickedCard.innerHTML = iconChecked;
+        projectColor = pickedCard.id;
+    }
+
+
     btnAddProject.onclick = () => show();
     btnCancelCreateProject.onclick = () => cancel();
-    btnCreateProject.addEventListener('click', () => {
-        createProject(newProjectInput.value.trim());
-        cancel();
-    })
+
+    return {show}
 })();
 
 
@@ -242,6 +344,7 @@ function createCard(task, project) {
     const card = createDiv('task-card');
     const divLeft = createDiv('card-left');
     const divRight = createDiv('card-right');
+
     divLeft.append(
       createCardCheckbox(task), 
       createCardTitle(task)
@@ -253,9 +356,9 @@ function createCard(task, project) {
       createCardRemoveBtn(task, project)
     );
     card.append(divLeft, divRight);
-    card.classList.add(`${task.priority}`);
     if (task.done) card.classList.add('done');
     else card.classList.remove('done');
+    card.style.borderLeftColor = project.color;
     return card;
 }
   
@@ -272,8 +375,9 @@ function createCardCheckbox(task) {
 
 function createCardTitle(task) {
     const title = document.createElement('span');
-    title.textContent = task.title;
-    if (task.done) title.style.textDecoration = 'line-through';
+    task.priority ? title.innerHTML = `<span class="material-symbols-outlined">priority_high </span><span>${task.title}</span>` :
+    title.innerHTML = `<span>${task.title}</span>`
+    if (task.done) title.lastElementChild.style.textDecoration = 'line-through';
     return title;
 }
 
@@ -295,6 +399,7 @@ function createCardDate(task) {
     {
         dueDate.style.color = 'red'
     }
+    if (task.done) dueDate.style.color = '#b5b5b5';
     return dueDate;
 }
 
@@ -342,10 +447,10 @@ const showDialog = function() {
 
     const create = function() {
         dialogCreateTask.showModal();
-        dialogTitle.textContent = 'New task'
-        btnSubmit.textContent = 'Create task'
+        dialogTitle.textContent = 'New task';
+        btnSubmit.textContent = 'Create task';
         btnSubmit.onclick = () => {
-        createTask(title.value.trim(), dueDate.value, priority.value, details.value.trim(), false);
+        createTask(title.value.trim(), dueDate.value, priority.checked, details.value.trim(), false);
         formCreateTask.reset();
         } 
     }
@@ -357,14 +462,13 @@ const showDialog = function() {
         title.value = task.title;
         details.value = task.details;
         dueDate.value = task.dueDate;
-        priority.value = task.priority;
+        priority.checked = task.priority;
         btnSubmit.onclick = () =>  {
             task.title = title.value;
             task.details = details.value;
             task.dueDate = dueDate.value;
-            task.priority = priority.value;
+            task.priority = priority.checked;
             editTask();
-            formCreateTask.reset();
         }
         
     }
@@ -388,7 +492,9 @@ const showDialogDetails = function(task) {
     task.dueDate != "" ? date.textContent = format(task.dueDate, "dd.LL.yyyy") :
                          date.textContent = "no date";
                     
-    priority.textContent = task.priority;
+    task.priority ? priority.textContent = "high" : 
+                    priority.textContent = "normal";
+
     task.details != "" ? text.textContent = task.details :
                          text.textContent = 'no additional details'
 

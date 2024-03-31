@@ -2,7 +2,6 @@ export default class ProjectList {
     constructor() {
       this.projects = [];
       this.current = {};
-      this.totalTasks = [];
     }
   
     addProject(newProject) {
