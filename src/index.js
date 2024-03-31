@@ -3,6 +3,8 @@ import Project from "./Project";
 import Task from "./Task";
 import { Render } from "./render";
 
+const VERSION = '1.1'
+
 const storage = function() {
   const load = function() {
     const list = Object.assign(new ProjectList(), JSON.parse(localStorage.getItem('projects')));
@@ -28,19 +30,36 @@ export const projectList = function () {
   return list;
 }();
 
+
 // inintialize page
 
 projectList.init();
 if (localStorage.length === 0) {
+  localStorage.setItem('version', VERSION);
   testContent();
+} else {
+  if (localStorage.getItem('version') !== VERSION) {
+    localStorage.setItem('version', VERSION);
+    clearAll();
+    testContent();
+  } 
 }
 Render.project();
+
+
+function clearAll() {
+  projectList.projects = [];
+  const home = new Project('Default');
+  projectList.addProject(home);
+  storage.save();
+}
+  
+
 
 export function createProject(name, color) {
   const newProject = new Project(name, color);
   projectList.addProject(newProject);
   storage.save();
-  console.log(newProject.color)
   Render.project();
   const menuProjects = document.querySelector('.menu-projects');
   menuProjects.scrollTop = menuProjects.scrollHeight;
