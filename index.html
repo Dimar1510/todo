@@ -12,9 +12,9 @@
         <div class="header">
             <h1>
                 <span class="material-symbols-outlined">
-                edit_note
+                    Checklist
                 </span>
-                TO-DO
+                ToDoList
             </h1>
         </div>
         <div class="sidebar">
@@ -41,7 +41,8 @@
                         <li class="add-project-item">
                             <button class="add-project active">+ Add project</button>
                             <div class="form-add-project">
-                                    <input type="text" id="newProjectInput" placeholder="New project name">
+                                    <p>Add new project</p>
+                                    <input type="text" id="newProjectInput" placeholder="New project name" maxlength="140">
                                     <div class="color-selector">
                                     </div>
                                     <div class="btn-group">
@@ -68,14 +69,26 @@
         </div>
         <div class="dialog-content">
             <form class="form" id="create-task" action="" method="dialog">
-                <input type="text" name="title" id="form-title" placeholder="Title" autofocus>
-                <textarea name="details" id="form-details" cols="30" rows="3" maxlength="144" placeholder="Details"></textarea>
-                <input type="date" name="date" id="form-date">
-                <div class="important-task">
-                    <label for="priority-select">Important</label>
-                    <input type="checkbox" name="priority" id="priority-select">
-                    <button type="submit" id="btnSubmit"></button>    
+                <div class="project-select">
+                    <label for="task-projects">Select a project for this task:</label>
+                    <select name="project" id="task-projects">
+                    </select>
                 </div>
+                <input type="text" name="title" id="form-title" placeholder="Name" autofocus maxlength="140">
+                <textarea name="details" id="form-details" cols="30" rows="3" maxlength="280" placeholder="Details"></textarea>
+                <div class="selectors">
+                    <div class="date-task">
+                        <label for="form-date">Due date:</label>
+                        <input type="date" name="date" id="form-date">
+                    </div>
+                    <div class="priority-select" id="priority-select">
+                        Important
+                        <!-- <label for="priority-select">Important</label>
+                        <input type="checkbox" name="priority" id="priority-select"> -->
+                    </div>
+                </div>
+                    <button type="submit" id="btnSubmit"></button>    
+                
             </form>
         </div>
     </dialog>
@@ -94,6 +107,18 @@
             <li>Details:</li>
             <li id="details-text" class="detail">text</li>
         </ul>
+    </dialog>
+    <dialog class="dialog-confirm">
+        <div class="dialog-header">
+            <h4>Delete project</h4>
+        </div>
+        <div class="confirm">
+            <h3>Are you sure you want to delete project "<span></span>"?</h3>
+            <div class="btn-group">
+                <button id="btnDeleteProject">delete</button>
+                <button id="btnCancelDeleteProject">cancel</button>
+            </div>
+        </div>
     </dialog>
     <script src="main.js"></script>
 </body>
