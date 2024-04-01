@@ -180,7 +180,10 @@ export const Render = function() {
             // important first
             if (projectList.sorting === 'important') cards.sort((a) => (a.task.priority) ? -1 : 1)
             // upcoming
-            if (projectList.sorting === 'date') cards.sort((a,b) => (compareAsc(a.task.dueDate, b.task.dueDate)) < 0 ? -1 : 1)
+            if (projectList.sorting === 'date') cards.sort((a,b) => {
+                (compareAsc(a.task.dueDate, b.task.dueDate)) < 0 ? -1 : 1
+                if (a.task.dueDate === '') return -1;
+            })
             // name
             if (projectList.sorting === 'name') cards.sort((a,b) => (a.task.title < b.task.title) ? -1 : 1)
 
