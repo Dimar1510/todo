@@ -132,16 +132,12 @@ export const Render = function() {
         const menuItemToday = document.querySelector('.item-today');
         const menuItemWeek = document.querySelector('.item-week');
         const items = document.querySelectorAll('.item-name');
-        const notes = document.querySelector('.item-notes')
+        // const notes = document.querySelector('.item-notes')
 
         // implement notes later
-        notes.onclick = () => {
-            projectList.current = 'notes'
-            
-            content.innerHTML = '<h3>Page is under construction<br>Check again later!</h3>';
-            sidebar();
-        }
-        // end
+        // notes.onclick = () => {
+        //     projectList.current = 'notes'
+        // }
 
         items.forEach(item => {
             item.classList.remove('active');
