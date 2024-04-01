@@ -2,6 +2,8 @@ export default class ProjectList {
     constructor() {
       this.projects = [];
       this.current = {};
+      this.sorting = '';
+      this.reverseOrder = false;
     }
   
     addProject(newProject) {

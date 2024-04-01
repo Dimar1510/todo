@@ -2,8 +2,8 @@ import ProjectList from "./ProjectList";
 import Project from "./Project";
 import Task from "./Task";
 import { Render } from "./render";
-
-const VERSION = '1.1'
+import { format } from "date-fns";
+const VERSION = '1.2'
 
 const storage = function() {
   const load = function() {
@@ -22,7 +22,8 @@ const storage = function() {
 export const projectList = function () {
   if (localStorage.length === 0) {
     const list = new ProjectList();
-    const home = new Project('Default');
+    const color = window.getComputedStyle(document.documentElement).getPropertyValue('--clr-dark');
+    const home = new Project('Default', color);
     list.addProject(home);
     return list;
   }
@@ -46,7 +47,6 @@ if (localStorage.length === 0) {
 }
 Render.project();
 
-
 function clearAll() {
   projectList.projects = [];
   const home = new Project('Default');
@@ -54,7 +54,10 @@ function clearAll() {
   storage.save();
 }
   
-
+export function hasTask(task) {
+  const newArr = projectList.projects.filter((project) => project.tasks.includes(task))
+  return newArr[0]
+}
 
 export function createProject(name, color) {
   const newProject = new Project(name, color);
@@ -83,10 +86,17 @@ export function deleteProject(project) {
   Render.project();
 }
 
-export function createTask(title, dueDate, priority, details) {
+export function createTask(title, dueDate, priority, details, project) {
   const newTask = new Task(title, dueDate, priority, details, false);
-  projectList.current.addTask(newTask);
-  newTask.project = projectList.current.name;
+  if (!project) {
+    projectList.current.addTask(newTask)
+    newTask.project = projectList.current.name;
+  } else {
+    project.addTask(newTask);
+    newTask.project = project.name;
+  }
+  
+  
   storage.save();
   Render.project();
 }
@@ -103,7 +113,6 @@ export function checkTask(checkbox, task) {
 }
 
 export function deleteTask(task, project) {
-  console.log(`deleting task "${task.title}"`)
   project.deleteTask(task);
   storage.save();
   Render.project();
@@ -119,15 +128,15 @@ export function getUndoneTasks(project) {
 
 function testContent() {
   const today = new Date()
-  createTask('Look around', new Date(), false, 'first time here?');
-  createTask('Create a project', new Date(), false, 'create a project and begin to track tasks or create a new task on a default page');
-  createProject('Work', 'blue');
+  createTask('Look around', format(new Date(),'yyyy-LL-dd'), false, 'first time here?');
+  createTask('Create a project', format(new Date(),'yyyy-LL-dd'), false, 'create a project and begin to track tasks or create a new task on a default page');
+  createProject('Work', '#982cf1');
   createTask('Learn JavaScript','', true, 'need to keep grinding');
-  createTask('Quit your job', new Date(1711560618000), false, 'how else would you learn');
-  createProject('Gym', 'orange');
-  createTask('Leg day', today.setDate(today.getDate() + 1), true, '');
-  createTask('Chest day', today.setDate(today.getDate() + 2), false, '');
-  createTask('Back day', today.setDate(today.getDate() + 3), false, '');
-  createTask('Arms day', today.setDate(today.getDate() + 4), true, '');
+  createTask('Rethink your life choices', format(new Date(),'yyyy-LL-dd'), false, 'this one might take a while');
+  createProject('Gym', '#ff564a');
+  createTask('Leg day', format(today.setDate(today.getDate() + 1),'yyyy-LL-dd'), true, '');
+  createTask('Chest day', format(today.setDate(today.getDate() + 2),'yyyy-LL-dd'), false, '');
+  createTask('Back day', format(today.setDate(today.getDate() + 3),'yyyy-LL-dd'), false, '');
+  createTask('Arms day', format(today.setDate(today.getDate() + 4),'yyyy-LL-dd'), true, '');
   projectList.current = projectList.projects[0];
 }

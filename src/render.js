@@ -1,4 +1,4 @@
-import { projectList, createProject, openProject, deleteProject, createTask, deleteTask, editTask, checkTask, getUndoneTasks, editProject} from ".";
+import { projectList, createProject, openProject, deleteProject, createTask, deleteTask, editTask, checkTask, getUndoneTasks, editProject, hasTask} from ".";
 import { format, compareAsc } from "date-fns";
 
 export const Render = function() {
@@ -8,21 +8,81 @@ export const Render = function() {
         const card = createDiv('task-card');
         const btnCreateTask = document.createElement('button');
         btnCreateTask.id = "btnCreate";
-        btnCreateTask.onclick = () => showDialog.create();
+        btnCreateTask.onclick = () => {
+            showDialog.create();
+        }
         btnCreateTask.innerHTML = '<span class="material-symbols-outlined">add</span> <span>Add task</span>'
         card.append(btnCreateTask)
 
-        const btnEditProject = document.createElement('button');
-        btnEditProject.innerHTML = '<span class="material-symbols-outlined">delete</span> <span>Delete project</span>'
-        btnEditProject.onclick = () => {
+        const btnDeleteProject = document.createElement('button');
+        btnDeleteProject.innerHTML = '<span class="material-symbols-outlined">delete</span> <span>Delete project</span>'
+        btnDeleteProject.onclick = () => {
         for (let project of projectList.projects) {
                 if (project === projectList.current) {
-                    deleteProject(project)
+                    showConfirmDeleteProject(project)
                 }
             }
         }
-        if (!isDefault()) card.append(btnEditProject)
+        if (!isDefault()) card.append(btnDeleteProject)
         content.append(card);
+        if (isDefault()) card.append(createSortSelector())
+    }
+
+    const createSortSelector = function() {
+        const sort = createDiv('sortBtns');
+        let method = ''
+        const text = document.createElement('div');
+        text.textContent = 'Sort by:';
+
+        const def = document.createElement('span');
+        def.classList.add('material-symbols-outlined');
+        def.textContent = 'colors';
+        if (projectList.sorting === '') def.classList.add('active')
+        def.onclick = () => {
+            method = '';
+        }
+
+        const name = document.createElement('span');
+        name.classList.add('material-symbols-outlined');
+        name.textContent = 'Sort_By_Alpha';
+        if (projectList.sorting === 'name') name.classList.add('active')
+        name.onclick = () => {
+            method = 'name';
+        }
+
+        const date = document.createElement('span');
+        date.classList.add('material-symbols-outlined');
+        date.textContent = 'pending_actions';
+        if (projectList.sorting === 'date') date.classList.add('active')
+        date.onclick = () => {
+            method = 'date';
+        }
+
+        const important = document.createElement('span');
+        important.classList.add('material-symbols-outlined');
+        important.textContent = 'priority_high';
+        if (projectList.sorting === 'important') important.classList.add('active')
+        important.onclick = () => {
+            method = 'important';
+        }
+        
+        const btns = [def, name, important, date]
+
+        btns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (projectList.sorting === method) {
+                    projectList.reverseOrder ? projectList.reverseOrder = false : projectList.reverseOrder = true;
+                } 
+                else {
+                    projectList.sorting = method;
+                    projectList.reverseOrder = false;
+                }                
+                editTask();
+            })
+        });
+
+        sort.append(text, def, name, important, date); 
+        return sort;
     }
 
     const updateCounter = function () {
@@ -77,11 +137,10 @@ export const Render = function() {
         // implement notes later
         notes.onclick = () => {
             projectList.current = 'notes'
-            console.log(projectList.current)
+            
             content.innerHTML = '<h3>Page is under construction<br>Check again later!</h3>';
             sidebar();
         }
-        
         // end
 
         items.forEach(item => {
@@ -96,28 +155,40 @@ export const Render = function() {
         menuItemHome.onclick = all;
         menuItemToday.onclick = today;
         menuItemWeek.onclick = week;
-
-
         menuProjects.innerHTML = '';
+
         for (let project of projectList.projects) {
             menuProjects.append(createProjectItem(project));
         }
-        
         // hide the 'default' project
         menuProjects.removeChild(menuProjects.firstElementChild);
-        
-        // console.log(`You are now in project ${projectList.current}"`)
     };
 
     const project = function() {
         content.innerHTML = '';
+        const cards = [];
         createFirstCard();
         updateCounter();
         if (isDefault()) {
+            
             for (let project of projectList.projects) {
                 for (let task of project.tasks) {
-                    content.append(createCard(task, project));
+                    cards.push({task, project})
                 }
+            }
+            // sorting
+            // important first
+            if (projectList.sorting === 'important') cards.sort((a) => (a.task.priority) ? -1 : 1)
+            // upcoming
+            if (projectList.sorting === 'date') cards.sort((a,b) => (compareAsc(a.task.dueDate, b.task.dueDate)) < 0 ? -1 : 1)
+            // name
+            if (projectList.sorting === 'name') cards.sort((a,b) => (a.task.title < b.task.title) ? -1 : 1)
+
+            if (projectList.reverseOrder) cards.reverse();
+        
+
+            for (let card of cards) {
+                content.append(createCard(card.task, card.project));
             }
             sidebar();
             return;
@@ -198,8 +269,7 @@ function createDiv(className) {
 }
 
 
-// Render project grid --------------------------------------------------
-
+// Render project grid
 
 function createProjectItem(project) {
     const projectItem = document.createElement('li');
@@ -214,10 +284,6 @@ function createProjectItem(project) {
     editIcon.classList.add("material-symbols-outlined");
     editIcon.textContent = 'edit_square';
 
-    // const removeIcon = document.createElement('span');
-    // removeIcon.classList.add("material-symbols-outlined");
-    // removeIcon.textContent = 'delete';
-
     const itemCounter = createDiv('item-counter');
     itemCounter.textContent = getUndoneTasks(project);
     itemCounter.textContent == '0' ? itemCounter.classList.remove('acitve') :
@@ -230,17 +296,19 @@ function createProjectItem(project) {
         openProject(project)
     });
     editIcon.addEventListener('click', (e) => {
-        e.stopPropagation()
+        // e.stopPropagation()
         projectCreation.show(project)
     })
-    // removeIcon.addEventListener('click', (e) => {
-    //     e.stopPropagation()
-    //     deleteProject(project)
-    // });
+    projectItem.onmouseover = () => {
+        projectItem.style.boxShadow = `0 1px 1px 0px ${project.color}`
+    }
+    projectItem.onmouseout = () => {
+        projectItem.style.boxShadow = `0 0px 0px 0px ${project.color}`
+    }
     return projectItem;
 }
 
-// project creation --------------------------------------------------
+// project creation
 
 const projectCreation = (function() {
     const btnAddProject = document.querySelector('.add-project');
@@ -248,7 +316,7 @@ const projectCreation = (function() {
     const formAddProject = document.querySelector('.form-add-project');
     const newProjectInput = document.querySelector('#newProjectInput');
     const btnCreateProject = document.querySelector('#btnCreateProject');
-    let projectColor = 'black'
+    let projectColor = ''
     const iconChecked = `<span class="material-symbols-outlined">done</span>`;
 
     const show = function(project) {
@@ -268,16 +336,13 @@ const projectCreation = (function() {
 
     const edit = function(project) {
         btnCreateProject.textContent = 'Confirm';
+        formAddProject.firstElementChild.textContent = `Edit project "${project.name}"`
         newProjectInput.value = project.name;
         const colorCard = document.getElementById(project.color);
         clearCheck()
         colorCard.innerHTML = iconChecked;
         btnCreateProject.onclick = () => {
-            if (newProjectInput.value.trim() === '') {
-                newProjectInput.style.borderColor = 'red';
-                setTimeout(() => newProjectInput.style.borderColor = 'black', 1500)
-                return;
-            }
+            if (!checkValidity(newProjectInput)) return;
             editProject(project, newProjectInput.value.trim(), projectColor)
             cancel();
         }
@@ -285,12 +350,9 @@ const projectCreation = (function() {
 
     const create = function() {
         btnCreateProject.textContent = 'Add';
+        formAddProject.firstElementChild.textContent = 'Add new project'
         btnCreateProject.onclick = () => {
-            if (newProjectInput.value.trim() === '') {
-                newProjectInput.style.borderColor = 'red';
-                setTimeout(() => newProjectInput.style.borderColor = 'black', 1500)
-                return;
-            }
+            if (!checkValidity(newProjectInput)) return;
             createProject(newProjectInput.value.trim(), projectColor);
             cancel();
         }
@@ -301,18 +363,22 @@ const projectCreation = (function() {
     }
 
     function colorPalette(){
-        const colorArray = ['black','red','blue','green','orange','purple','aqua','maroon'];
+        const colorArray = ['white','#ff564a','#0043a8','#026134','#f4884d','#982cf1','#c3066e'];
         const colorSelector = document.querySelector('.color-selector');
         colorSelector.innerHTML = "";
         for (let color of colorArray) {
             const colorCard = createDiv('color-card');
             colorCard.id = color;
             colorCard.style.backgroundColor = color;
-            if (color === 'black') colorCard.innerHTML = iconChecked;
+            if (color === colorArray[0]) colorCard.innerHTML = iconChecked;
             colorCard.onclick = (e) => {
                 checkColor(e.target);
             }
             colorSelector.appendChild(colorCard);
+            colorSelector.onclick = (e) => {
+                e.stopPropagation()
+                newProjectInput.focus();
+            }
         }
     }
 
@@ -338,7 +404,7 @@ const projectCreation = (function() {
 })();
 
 
-// Render tasks grid --------------------------------------------------
+// Render tasks grid
 
 function createCard(task, project) {
     const card = createDiv('task-card');
@@ -350,8 +416,8 @@ function createCard(task, project) {
       createCardTitle(task)
     );
     divRight.append(
-      createCardDetailsBtn(task), 
       createCardDate(task), 
+      createCardDetailsBtn(task), 
       createCardEditBtn(task), 
       createCardRemoveBtn(task, project)
     );
@@ -359,6 +425,13 @@ function createCard(task, project) {
     if (task.done) card.classList.add('done');
     else card.classList.remove('done');
     card.style.borderLeftColor = project.color;
+    card.onmouseover = () => {
+        card.style.boxShadow = `0 0px 1px 1px ${project.color}`
+    }
+    card.onmouseout = () => {
+        card.style.boxShadow = `0 0px 0px 0px ${project.color}`
+    }
+    
     return card;
 }
   
@@ -375,15 +448,18 @@ function createCardCheckbox(task) {
 
 function createCardTitle(task) {
     const title = document.createElement('span');
-    task.priority ? title.innerHTML = `<span class="material-symbols-outlined">priority_high </span><span>${task.title}</span>` :
+    task.priority ? title.innerHTML = `<span class="material-symbols-outlined">Exclamation</span><span>${task.title}</span>` :
     title.innerHTML = `<span>${task.title}</span>`
     if (task.done) title.lastElementChild.style.textDecoration = 'line-through';
     return title;
 }
 
 function createCardDetailsBtn(task) {
-    const btnDetails = document.createElement('button');
-    btnDetails.textContent = 'details';
+    // const btnDetails = document.createElement('button');
+    // btnDetails.textContent = 'details';
+    const btnDetails = document.createElement('span');
+    btnDetails.classList.add('material-symbols-outlined')
+    btnDetails.innerHTML = 'info';
     btnDetails.onclick = () => showDialogDetails(task);
     return btnDetails;
 }
@@ -406,7 +482,7 @@ function createCardDate(task) {
 function createCardEditBtn(task) {
     const edit = document.createElement('span');
     edit.classList.add('material-symbols-outlined')
-    edit.innerHTML = 'edit_square</span>';
+    edit.innerHTML = 'edit_square';
     edit.onclick = () => showDialog.edit(task);
     return edit;
 }
@@ -423,18 +499,6 @@ function createCardRemoveBtn(task, project) {
 // DIALOG CREATE
 const showDialog = function() {
     const dialogCreateTask = document.querySelector('.dialog-create');
-    dialogCreateTask.addEventListener("click", e => {
-        const dialogDimensions = dialogCreateTask.getBoundingClientRect()
-        if (
-            e.clientX < dialogDimensions.left ||
-            e.clientX > dialogDimensions.right ||
-            e.clientY < dialogDimensions.top ||
-            e.clientY > dialogDimensions.bottom
-        ) {
-            dialogCreateTask.close();
-            formCreateTask.reset();
-        }
-    })
     const formCreateTask = document.querySelector('form');
     const title = document.getElementById('form-title');
     const details = document.getElementById('form-details');
@@ -443,15 +507,30 @@ const showDialog = function() {
     const btnSubmit = document.getElementById('btnSubmit');
     const dialogTitle = document.querySelector('.dialog-create > .dialog-header > h2');
     const buttonClose = document.querySelector('.dialog-create > .dialog-header > span');
-    buttonClose.onclick = () => dialogCreateTask.close();
+    buttonClose.onclick = () => {
+        dialogCreateTask.close();
+        formCreateTask.reset();
+    };
+    priority.onclick = () => {
+        priority.classList.toggle('checked');
+    }
+
 
     const create = function() {
         dialogCreateTask.showModal();
+        priority.classList.remove('checked')
         dialogTitle.textContent = 'New task';
         btnSubmit.textContent = 'Create task';
-        btnSubmit.onclick = () => {
-        createTask(title.value.trim(), dueDate.value, priority.checked, details.value.trim(), false);
-        formCreateTask.reset();
+        createList()
+        btnSubmit.onclick = (e) => {
+            if (!checkValidity(title)) {
+                e.preventDefault()
+                return;
+            }
+            const project = selectProject();
+            createTask(title.value.trim(), dueDate.value, (priority.classList.contains('checked')), details.value.trim(), project);
+            console.log(title.value)
+            formCreateTask.reset();
         } 
     }
 
@@ -462,18 +541,63 @@ const showDialog = function() {
         title.value = task.title;
         details.value = task.details;
         dueDate.value = task.dueDate;
+        task.priority ? priority.classList.add('checked') :
+                        priority.classList.remove('checked');
         priority.checked = task.priority;
+        createList(task);
         btnSubmit.onclick = () =>  {
+            const newProject = selectProject();
+            const project = hasTask(task)
             task.title = title.value;
             task.details = details.value;
             task.dueDate = dueDate.value;
-            task.priority = priority.checked;
+            task.priority = (priority.classList.contains('checked'));
+            if (newProject !== project) {
+                project.deleteTask(task);
+                newProject.addTask(task);
+                task.project = newProject.name;
+            }
             editTask();
-        }
-        
+        }  
     }
+
+    dialogCreateTask.addEventListener("click", e => {
+        const dialogDimensions = dialogCreateTask.getBoundingClientRect()
+        if (
+            e.clientX < dialogDimensions.left ||
+            e.clientX > dialogDimensions.right ||
+            e.clientY < dialogDimensions.top ||
+            e.clientY > dialogDimensions.bottom
+        ) {
+            dialogCreateTask.close();
+        }
+    })
     return {create, edit};
 }();
+
+function createList (task) {
+    const projectSelect = document.getElementById('task-projects');
+    projectSelect.innerHTML = ""
+    for (let project of projectList.projects) {
+        const option = document.createElement('option');
+        option.value = project;
+        option.text = project.name;
+        option.style.color = project.color;
+        projectSelect.add(option);
+        if (project === projectList.current || project.tasks.includes(task)) option.selected = true;
+    }
+}
+
+function selectProject() {
+    const projectSelect = document.getElementById('task-projects');
+    let selectedProjectIndex = 0;
+    for (let i = 0; i < projectSelect.options.length; i++) {
+        if (projectSelect.options[i].selected) selectedProjectIndex = i;
+    }
+    const project = (projectList.projects[selectedProjectIndex]);
+    return project;
+}
+
 
 // DIALOG DETAILS
 const showDialogDetails = function(task) {
@@ -512,6 +636,48 @@ const showDialogDetails = function(task) {
     })
 };
 
+// DIALOG CONFIRM DELETE PROJECT
+const showConfirmDeleteProject = function(project) {
 
+    const btnDelete = document.getElementById('btnDeleteProject');
+    const btnCancel = document.getElementById('btnCancelDeleteProject');
+    const dialog = document.querySelector('.dialog-confirm');
+    const projectName = document.querySelector('.dialog-confirm > .confirm span');
 
+    btnCancel.onclick = () => dialog.close();
+    btnDelete.onclick = () => {
+        deleteProject(project);
+        dialog.close()
+    }
 
+    dialog.showModal();
+    projectName.textContent = project.name;
+    
+    dialog.addEventListener("click", e => {
+        const dialogDimensions = dialog.getBoundingClientRect()
+        if (
+            e.clientX < dialogDimensions.left ||
+            e.clientX > dialogDimensions.right ||
+            e.clientY < dialogDimensions.top ||
+            e.clientY > dialogDimensions.bottom
+        ) {
+            dialog.close()
+        }
+    })
+};
+
+// validity
+
+function checkValidity(field) {
+    if (field.value.trim() === '') {
+        field.placeholder = 'Please enter name';
+        field.classList.add('error')
+        field.focus();
+        field.oninput = () => {
+            field.placeholder = 'Name';
+            field.classList.remove('error');
+        }
+        return false;
+    }
+    return true;
+}

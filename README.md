@@ -1,5 +1,3 @@
 # todo
 
-additional things:
-drag'n'drop
-sorting
+could add: notes, drag'n'drop (BIG maybe);
