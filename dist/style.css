@@ -702,7 +702,7 @@ dialog form {
         left: 0;
         width: 50%;
         min-width: 300px;
-        animation: show 0.5s ease-in-out;
+        animation: show 0.3s;
         height: 100%;
     }
 
