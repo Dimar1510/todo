@@ -325,10 +325,11 @@ function createProjectItem(project) {
     projectItem.style.borderLeftColor = project.color;
     projectItem.append(divLeft, divRight);
     projectItem.addEventListener('click',() => {
-        openProject(project)
+        projectCreation.cancel();
+        openProject(project);
     });
-    editIcon.addEventListener('click', () => {
-        // e.stopPropagation()
+    editIcon.addEventListener('click', (e) => {
+        e.stopPropagation();
         projectCreation.show(project)
     })
     projectItem.classList.add('nav')
