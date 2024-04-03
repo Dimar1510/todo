@@ -28,6 +28,13 @@ export const Render = function() {
         if (isDefault()) card.append(createSortSelector())
     }
 
+    const projectTitle = function(title) {
+        const titleDiv = document.querySelector('.project-title');
+        !title ? 
+        titleDiv.textContent = projectList.current.name :
+        titleDiv.textContent = title;
+    }
+
     const createSortSelector = function() {
         const sort = createDiv('sortBtns');
         let method = ''
@@ -158,6 +165,14 @@ export const Render = function() {
         }
         // hide the 'default' project
         menuProjects.removeChild(menuProjects.firstElementChild);
+
+        // for mobile
+        const itemsOnMobile = document.querySelectorAll('.nav')
+        itemsOnMobile.forEach(item => {
+            item.addEventListener('click', () => {
+                mobileMenu.hide();
+            })
+        });
     };
 
     const project = function() {
@@ -165,8 +180,9 @@ export const Render = function() {
         const cards = [];
         createFirstCard();
         updateCounter();
+        projectTitle();
         if (isDefault()) {
-            
+            projectTitle('TDL // All tasks')
             for (let project of projectList.projects) {
                 for (let task of project.tasks) {
                     cards.push({task, project})
@@ -231,6 +247,7 @@ export const Render = function() {
         if (content.innerHTML === '') {
             content.innerHTML = "<h3>Tasks for today will be here</h3>"
         }
+        projectTitle('Tasks for today')
         sidebar();
 
     } 
@@ -248,6 +265,7 @@ export const Render = function() {
         if (content.innerHTML === '') {
             content.innerHTML = "<h3>Tasks for this week will be here</h3>"
         }
+        projectTitle('Tasks for this week')
         sidebar();
         
     }
@@ -267,6 +285,21 @@ function createDiv(className) {
     return div;
 }
 
+// menu btn
+
+const mobileMenu = function() {
+    const menuBtn = document.querySelector('.hamburger');
+    const container = document.querySelector('.main-container');
+    const hide = function() {
+        container.classList.remove('show');
+    }
+    
+    menuBtn.onclick = () => {
+        container.classList.toggle('show');
+        
+    }
+    return {hide}
+}()
 
 // Render project grid
 
@@ -294,10 +327,11 @@ function createProjectItem(project) {
     projectItem.addEventListener('click',() => {
         openProject(project)
     });
-    editIcon.addEventListener('click', (e) => {
+    editIcon.addEventListener('click', () => {
         // e.stopPropagation()
         projectCreation.show(project)
     })
+    projectItem.classList.add('nav')
     projectItem.onmouseover = () => {
         projectItem.style.boxShadow = `0 1px 1px 0px ${project.color}`
     }
@@ -315,9 +349,9 @@ const projectCreation = (function() {
     const formAddProject = document.querySelector('.form-add-project');
     const newProjectInput = document.querySelector('#newProjectInput');
     const btnCreateProject = document.querySelector('#btnCreateProject');
-    let projectColor = ''
+    let projectColor = 'white'
     const iconChecked = `<span class="material-symbols-outlined">done</span>`;
-
+    
     const show = function(project) {
         btnAddProject.classList.remove('active');
         formAddProject.classList.add('active');
@@ -342,7 +376,8 @@ const projectCreation = (function() {
         colorCard.innerHTML = iconChecked;
         btnCreateProject.onclick = () => {
             if (!checkValidity(newProjectInput)) return;
-            editProject(project, newProjectInput.value.trim(), projectColor)
+            editProject(project, newProjectInput.value.trim(), projectColor);
+            mobileMenu.hide();
             cancel();
         }
     }
@@ -353,6 +388,7 @@ const projectCreation = (function() {
         btnCreateProject.onclick = () => {
             if (!checkValidity(newProjectInput)) return;
             createProject(newProjectInput.value.trim(), projectColor);
+            mobileMenu.hide();
             cancel();
         }
     }
@@ -399,7 +435,7 @@ const projectCreation = (function() {
     btnAddProject.onclick = () => show();
     btnCancelCreateProject.onclick = () => cancel();
 
-    return {show}
+    return {show, cancel}
 })();
 
 
@@ -415,12 +451,12 @@ function createCard(task, project) {
       createCardTitle(task)
     );
     divRight.append(
-      createCardDate(task), 
+       
       createCardDetailsBtn(task), 
       createCardEditBtn(task), 
       createCardRemoveBtn(task, project)
     );
-    card.append(divLeft, divRight);
+    card.append(divLeft, createCardDate(task), divRight);
     if (task.done) card.classList.add('done');
     else card.classList.remove('done');
     card.style.borderLeftColor = project.color;
@@ -430,7 +466,26 @@ function createCard(task, project) {
     card.onmouseout = () => {
         card.style.boxShadow = `0 0px 0px 0px ${project.color}`
     }
-    
+
+    // for mobile 
+    const show = document.createElement('span');
+    show.classList.add('material-symbols-outlined')
+    show.innerHTML = 'more_vert';
+    show.classList.add('more-btn')
+    card.append(show);
+    show.onclick = () => {
+        divRight.classList.toggle('visible')
+    }
+    window.addEventListener("click", e => {
+        const dialogDimensions = divRight.getBoundingClientRect()
+        if (
+            e.clientX < dialogDimensions.left || 
+            e.clientY < dialogDimensions.top ||
+            e.clientY > dialogDimensions.bottom
+        ) {
+            divRight.classList.remove('visible')
+        }
+    })
     return card;
 }
   
@@ -493,6 +548,8 @@ function createCardRemoveBtn(task, project) {
     remove.onclick = () => deleteTask(task, project);
     return remove;
 }
+
+
 
 
 // DIALOG CREATE
@@ -647,6 +704,7 @@ const showConfirmDeleteProject = function(project) {
     btnDelete.onclick = () => {
         deleteProject(project);
         dialog.close()
+        projectCreation.cancel();
     }
 
     dialog.showModal();
@@ -680,3 +738,4 @@ function checkValidity(field) {
     }
     return true;
 }
+

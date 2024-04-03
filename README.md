@@ -1,3 +1,3 @@
 # todo
 
-could add: notes, drag'n'drop (BIG maybe), media-q;
+could add: notes, drag'n'drop (BIG maybe);

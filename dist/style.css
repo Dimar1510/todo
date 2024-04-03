@@ -3,6 +3,7 @@
     padding: 0;
     box-sizing: border-box;
     list-style: none;
+
 }
 
 :root {
@@ -48,7 +49,8 @@ body {
     justify-content: center;
     align-items: center;
     background-color: #333;
-    color: var(--clr-text)
+    color: var(--clr-text);
+    border: none;
 }
 
 
@@ -56,6 +58,7 @@ body {
 .main-container {
     width: 1200px;
     height: 800px;
+    max-height: 100%;
     border: 1px solid black;
     display: grid;
     grid-template-columns: 250px 1fr;
@@ -69,12 +72,67 @@ body {
     background: rgb(12,101,97);
     background: linear-gradient(90deg, rgba(12,101,97,1) 0%, rgba(16,137,90,1) 100%);
     padding: 0.5rem; 
-
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .header span {
     font-size: 2rem;
 }
+
+.project-title {
+    display: none;
+    text-overflow: ellipsis;
+    overflow: hidden; 
+    width: 80%; 
+    white-space: nowrap;
+
+}
+
+.hamburger {
+    display: none;
+    position: relative;
+    width: 30px;
+    height: 9px;
+    transition: left .3s, width .3s;
+    z-index: 3;
+}
+
+.hamburger:after, .hamburger:before {
+    display: block;
+    position: absolute;
+    width: 30px;
+    height: 2px;
+    left: calc(50% - 15px);
+    background-color: var(--clr-text);
+    transition: transform .3s;
+    transform: translateZ(0);
+    content: "";
+}
+
+.hamburger:before {
+    top: calc(50% - 4px);
+    transition-property: transform, opacity;
+}
+
+.hamburger:after {
+    top: calc(50% + 5px);
+}
+
+.main-container.show .hamburger:after, .hamburger:before {
+    width: 30px;
+}
+
+.main-container.show .hamburger:before {
+    transform: translate3d(-5px, 5px, 0) rotate(45deg);
+}
+
+.main-container.show .hamburger:after {
+    transform: translate3d(-5px, -3px, 0) rotate(-45deg);
+}
+
+
 
 button {
     text-transform: uppercase;
@@ -120,11 +178,10 @@ input.error:focus::placeholder {
     justify-content: space-between;
     padding: 1rem;
     font-size: 1.2rem;
-    
 }
 
 .menu-projects {
-    max-height: 22rem;
+    max-height: 18rem;
     overflow-y: auto;
 
 }
@@ -506,22 +563,21 @@ dialog form {
 .task-card {
     width: 100%;
     background-color: var(--clr-light);
-    display: flex;    
-    justify-content: space-between;
+    display: grid;    
+    grid-template-columns: 1fr 100px min-content min-content;
     padding: 0.5rem 1rem;
     align-items: center;
     border-left: 5px solid;
     transition: all 0.3s ease-out;
 }
 
-/* .task-card:hover:not(:has(#btnCreate)) {
-    box-shadow: 0 0px 1px 1px;
-} */
 
 .task-card:has(#btnCreate) {
     background: none;
     border: none;
     box-shadow: none;
+    display: flex;
+    justify-content: space-between;
 }
 
 .sortBtns {
@@ -534,6 +590,10 @@ dialog form {
 
 .sortBtns span.active {
     color: var(--clr-dark);
+}
+
+.more-btn {
+    display: none;
 }
 
 .card-right {
@@ -624,3 +684,139 @@ dialog form {
     background-color: var(--clr-inactive);
 }
 
+/* Media */
+
+@media (max-width: 950px) {
+    .main-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+        height: 100%;
+        border: none;
+        position: relative;
+    }
+
+    .sidebar {
+        position: absolute;
+        display: none;
+        z-index: 2;
+        left: 0;
+        width: 50%;
+        min-width: 300px;
+        animation: show 1s ease-in-out;
+        height: 100%;
+    }
+
+    .header {
+        z-index: 10;
+    }
+
+    .title {
+        display: none;
+    }
+
+    .project-title {
+        display: block;
+    }
+
+    @keyframes show {
+        0% {
+            left: -90%;
+        }
+    }
+  
+    .hamburger {
+        display: block;
+    }
+
+    .content {
+        grid-column: 1/3;
+        height: 100%;
+        position: relative;
+        padding: 0.5rem;
+        gap: 0.5rem;
+    }
+
+    .project-item span {
+        display: none;
+        font-size: 1.2em;
+    }
+
+    .project-item:hover span{
+        display: none;
+    }
+
+    .project-item:has(.item-name.active) span {
+        display: block;
+    }
+
+    .content::after {
+        content: "";
+        width: 100%;
+        height: 100%;
+        backdrop-filter: blur(10px);
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: none;
+    }
+
+    .task-card:not(.task-card:has(#btnCreate)) {
+        min-height: 5rem;
+    
+    }
+
+
+    .main-container.show .sidebar {
+        display: block;
+    }
+    .main-container.show .content::after {
+        display: block;
+    }
+
+    dialog {
+        width: 100%;
+        max-width: 100%;
+        height: fit-content;
+        position: absolute;
+        margin-bottom: 0;
+        
+    }
+    
+    dialog::backdrop {
+        background: black;
+        opacity: 0.8;
+    }
+
+    dialog[open] {
+        animation:  0.3s ease-in-out;
+    }
+    
+    .task-card {
+        position: relative;
+    }
+
+    .card-right {
+        display: none;
+        position: absolute;
+        right: 3rem;
+        gap: 0.5rem;
+        background-color: inherit;
+        height: 100%;
+        padding-left: 1rem;
+    }
+
+    .more-btn {
+        display: block;
+    }
+
+    .card-right.visible {
+        display: flex;
+    }
+
+}
+
+@media (max-width: 400px) {
+    .sidebar {
+        width: 100%;
+    }
+}

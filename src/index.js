@@ -124,7 +124,7 @@ export function getUndoneTasks(project) {
       if (!task.done) count++;
     }
   return count;
-};
+}
 
 function testContent() {
   const today = new Date()
