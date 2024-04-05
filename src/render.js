@@ -30,9 +30,17 @@ export const Render = function() {
 
     const projectTitle = function(title) {
         const titleDiv = document.querySelector('.project-title');
-        !title ? 
-        titleDiv.textContent = projectList.current.name :
-        titleDiv.textContent = title;
+        const titleColor = document.querySelector('.title-color');
+        if (!title) {
+            titleDiv.textContent = projectList.current.name
+            titleColor.style.backgroundColor = projectList.current.color;
+        }
+        else {
+            titleDiv.textContent = title;
+            titleColor.style.backgroundColor = null;
+        }
+
+        
     }
 
     const createSortSelector = function() {
@@ -309,6 +317,7 @@ function createProjectItem(project) {
     const divLeft = document.createElement('div');
     const divRight = document.createElement('div');
     const itemName = createDiv('item-name');
+    
     itemName.textContent = project.name;
     project === projectList.current ? itemName.classList.add('active') : itemName.classList.remove('active');
 
@@ -327,6 +336,8 @@ function createProjectItem(project) {
     projectItem.addEventListener('click',() => {
         projectCreation.cancel();
         openProject(project);
+        
+
     });
     editIcon.addEventListener('click', (e) => {
         e.stopPropagation();
