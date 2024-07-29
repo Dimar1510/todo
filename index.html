@@ -1,132 +1,142 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TO-DO</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
     <div class="main-container">
-        <div class="header">
-            <div class="title">
-                <h1>
-                    <span class="material-symbols-outlined">Checklist</span>
-                    ToDoList
-                </h1>
-            </div>
-            <div class="title-wrapper">
-            <div class="title-color"></div>
-            <h2 class="project-title">
-                
-            </h2>
-            </div>
-            <div class="hamburger">
-            
-            </div> 
+      <div class="header">
+        <div class="title">
+          <h1>
+            <span class="material-symbols-outlined">Checklist</span>
+            ToDoList
+          </h1>
         </div>
-        <div class="sidebar">
-            <div class="menu">
-                <ul class="menu-dates">
-                    <li class="item-home nav">
-                        <div class="item-name">All tasks</div>
-                        <div class="item-counter"></div>
-                    </li>
-                    <li class="item-today nav">
-                        <div class="item-name">Today</div>
-                        <div class="item-counter"></div>
-                    </li>
-                    <li class="item-week nav">
-                        <div class="item-name">This week</div>
-                        <div class="item-counter"></div>
-                    </li>
-                    <li class="item-projects">
-                        <div class="item-name">Projects</div>
-                        
-                    </li>
-                    <ul class="menu-projects">
-                    </ul>
-                        <li class="add-project-item">
-                            <button class="add-project active">+ Add project</button>
-                            <div class="form-add-project">
-                                    <p>Add new project</p>
-                                    <input type="text" id="newProjectInput" placeholder="New project name" maxlength="140">
-                                    <div class="color-selector">
-                                    </div>
-                                    <div class="btn-group">
-                                        <button id="btnCreateProject">Add</button>
-                                        <button id="btnCancelCreateProject">Cancel</button>
-                                    </div>
-                            </div>
-                        </li>
-                    
-                    <!-- <li class="item-notes">
+        <div class="title-wrapper">
+          <div class="title-color"></div>
+          <h2 class="project-title"></h2>
+        </div>
+        <div class="hamburger"></div>
+      </div>
+      <div class="sidebar">
+        <div class="menu">
+          <ul class="menu-dates">
+            <li class="item-home nav">
+              <div class="item-name">All tasks</div>
+              <div class="item-counter"></div>
+            </li>
+            <li class="item-today nav">
+              <div class="item-name">Today</div>
+              <div class="item-counter"></div>
+            </li>
+            <li class="item-week nav">
+              <div class="item-name">This week</div>
+              <div class="item-counter"></div>
+            </li>
+            <li class="item-projects">
+              <div class="item-name">Projects</div>
+            </li>
+            <ul class="menu-projects"></ul>
+            <li class="add-project-item">
+              <button class="add-project active">+ Add project</button>
+              <div class="form-add-project">
+                <p>Add new project</p>
+                <input
+                  type="text"
+                  id="newProjectInput"
+                  placeholder="New project name"
+                  maxlength="140"
+                />
+                <div class="color-selector"></div>
+                <div class="btn-group">
+                  <button id="btnCreateProject">Add</button>
+                  <button id="btnCancelCreateProject">Cancel</button>
+                </div>
+              </div>
+            </li>
+
+            <!-- <li class="item-notes">
                         <div class="item-name">Notes</div>
                     </li> -->
-                </ul>
-            </div>
+          </ul>
         </div>
-        <div class="content">
-           
-        </div>
+      </div>
+      <div class="content"></div>
     </div>
     <dialog class="dialog-create">
-        <div class="dialog-header">
-            <h2></h2>
-            <span>×</span>
-        </div>
-        <div class="dialog-content">
-            <form class="form" id="create-task" action="" method="dialog">
-                <div class="project-select">
-                    <label for="task-projects">Select a project for this task:</label>
-                    <select name="project" id="task-projects">
-                    </select>
-                </div>
-                <input type="text" name="title" id="form-title" placeholder="Name" autofocus maxlength="140">
-                <textarea name="details" id="form-details" cols="30" rows="3" maxlength="280" placeholder="Details"></textarea>
-                <div class="selectors">
-                    <div class="date-task">
-                        <label for="form-date">Due date:</label>
-                        <input type="date" name="date" id="form-date">
-                    </div>
-                    <div class="priority-select" id="priority-select">
-                        Important
-                    </div>
-                </div>
-                    <button type="submit" id="btnSubmit"></button>    
-                
-            </form>
-        </div>
+      <div class="dialog-header">
+        <h2></h2>
+        <span>×</span>
+      </div>
+      <div class="dialog-content">
+        <form class="form" id="create-task" action="" method="dialog">
+          <div class="project-select">
+            <label for="task-projects">Select a project for this task:</label>
+            <select name="project" id="task-projects"></select>
+          </div>
+          <input
+            type="text"
+            name="title"
+            id="form-title"
+            placeholder="Name"
+            autofocus
+            maxlength="140"
+          />
+          <textarea
+            name="details"
+            id="form-details"
+            cols="30"
+            rows="3"
+            maxlength="280"
+            placeholder="Details"
+          ></textarea>
+          <div class="selectors">
+            <div class="date-task">
+              <label for="form-date">Due date:</label>
+              <input type="date" name="date" id="form-date" />
+            </div>
+            <div class="priority-select" id="priority-select">Important</div>
+          </div>
+          <button type="submit" id="btnSubmit"></button>
+        </form>
+      </div>
     </dialog>
+
     <dialog class="dialog-details">
-        <div class="dialog-header">
-            <h4>Task</h4>
-            <span>×</span>
-        </div>
-        <ul class="details-grid">
-            <li>Project:</li>
-            <li id="details-project" class="detail">name</li>
-            <li>Due Date:</li>
-            <li id="details-date" class="detail">date</li>
-            <li>Priority:</li>
-            <li id="details-priority" class="detail">prio</li>
-            <li>Details:</li>
-            <li id="details-text" class="detail">text</li>
-        </ul>
+      <div class="dialog-header">
+        <h4>Task</h4>
+        <span>×</span>
+      </div>
+      <ul class="details-grid">
+        <li>Project:</li>
+        <li id="details-project" class="detail">name</li>
+        <li>Due Date:</li>
+        <li id="details-date" class="detail">date</li>
+        <li>Priority:</li>
+        <li id="details-priority" class="detail">prio</li>
+        <li>Details:</li>
+        <li id="details-text" class="detail">text</li>
+      </ul>
     </dialog>
     <dialog class="dialog-confirm">
-        <div class="dialog-header">
-            <h4>Delete project</h4>
+      <div class="dialog-header">
+        <h4>Delete project</h4>
+      </div>
+      <div class="confirm">
+        <h3>Are you sure you want to delete project "<span></span>"?</h3>
+        <div class="btn-group">
+          <button id="btnDeleteProject">delete</button>
+          <button id="btnCancelDeleteProject">cancel</button>
         </div>
-        <div class="confirm">
-            <h3>Are you sure you want to delete project "<span></span>"?</h3>
-            <div class="btn-group">
-                <button id="btnDeleteProject">delete</button>
-                <button id="btnCancelDeleteProject">cancel</button>
-            </div>
-        </div>
+      </div>
     </dialog>
     <script src="main.js"></script>
-</body>
+  </body>
 </html>
