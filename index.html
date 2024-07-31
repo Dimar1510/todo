@@ -23,7 +23,7 @@
           <div class="title-color"></div>
           <h2 class="project-title"></h2>
         </div>
-        <div class="hamburger"></div>
+        <button class="hamburger"></button>
       </div>
       <div class="sidebar">
         <div class="menu">
@@ -56,8 +56,8 @@
                 />
                 <div class="color-selector"></div>
                 <div class="btn-group">
-                  <button id="btnCreateProject">Add</button>
                   <button id="btnCancelCreateProject">Cancel</button>
+                  <button id="btnCreateProject">Add</button>
                 </div>
               </div>
             </li>
@@ -73,7 +73,7 @@
     <dialog class="dialog-create">
       <div class="dialog-header">
         <h2></h2>
-        <span>×</span>
+        <button class="btn-dialog-close">✖</button>
       </div>
       <div class="dialog-content">
         <form class="form" id="create-task" action="" method="dialog">
@@ -112,7 +112,7 @@
     <dialog class="dialog-details">
       <div class="dialog-header">
         <h4>Task</h4>
-        <span>×</span>
+        <button class="btn-dialog-close">✖</button>
       </div>
       <ul class="details-grid">
         <li>Project:</li>
