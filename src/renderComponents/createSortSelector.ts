@@ -44,9 +44,8 @@ export const createSortSelector = () => {
   btns.forEach((btn) => {
     btn.addEventListener("click", () => {
       if (projectList.sorting === method) {
-        projectList.reverseOrder
-          ? (projectList.reverseOrder = false)
-          : (projectList.reverseOrder = true);
+        if (projectList.reverseOrder) projectList.reverseOrder = false;
+        else projectList.reverseOrder = true;
       } else {
         projectList.sorting = method;
         projectList.reverseOrder = false;

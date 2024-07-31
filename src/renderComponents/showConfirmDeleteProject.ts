@@ -1,11 +1,13 @@
+import Project from "../classes/Project";
 import { deleteProject } from "../functions";
+import { getElement } from "../utils";
 import { projectCreation } from "./projectCreation";
 
-export const showConfirmDeleteProject = (project) => {
-  const btnDelete = document.getElementById("btnDeleteProject");
-  const btnCancel = document.getElementById("btnCancelDeleteProject");
-  const dialog = document.querySelector(".dialog-confirm");
-  const projectName = document.querySelector(".dialog-confirm > .confirm span");
+export const showConfirmDeleteProject = (project: Project) => {
+  const btnDelete = getElement<HTMLButtonElement>("#btnDeleteProject");
+  const btnCancel = getElement<HTMLButtonElement>("#btnCancelDeleteProject");
+  const dialog = getElement<HTMLDialogElement>(".dialog-confirm");
+  const projectName = getElement(".dialog-confirm > .confirm span");
 
   btnCancel.onclick = () => dialog.close();
   btnDelete.onclick = () => {

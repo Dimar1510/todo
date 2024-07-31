@@ -1,6 +1,6 @@
 import { Render } from "./render";
 import { getMockData } from "./getMockData";
-import { projectList } from "./functions";
+import { clearAll, projectList } from "./functions";
 const VERSION = "1.2";
 
 projectList.init();

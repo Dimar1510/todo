@@ -1,18 +1,18 @@
+import Project from "../classes/Project";
 import { getUndoneTasks, openProject, projectList } from "../functions";
 import { createDiv } from "../utils";
 import { projectCreation } from "./projectCreation";
 
-export const createProjectItem = (project) => {
-  const projectItem = document.createElement("li");
+export const createProjectItem = (project: Project) => {
+  const projectItem: HTMLLIElement = document.createElement("li");
   projectItem.classList.add("project-item");
   const divLeft = document.createElement("div");
   const divRight = document.createElement("div");
   const itemName = createDiv("item-name");
 
   itemName.textContent = project.name;
-  project === projectList.current
-    ? itemName.classList.add("active")
-    : itemName.classList.remove("active");
+  if (project === projectList.current) itemName.classList.add("active");
+  else itemName.classList.remove("active");
 
   const editIcon = document.createElement("span");
   editIcon.classList.add("material-symbols-outlined");
@@ -20,9 +20,8 @@ export const createProjectItem = (project) => {
 
   const itemCounter = createDiv("item-counter");
   itemCounter.textContent = getUndoneTasks(project).toString();
-  itemCounter.textContent == "0"
-    ? itemCounter.classList.remove("active")
-    : itemCounter.classList.add("active");
+  if (itemCounter.textContent == "0") itemCounter.classList.remove("active");
+  else itemCounter.classList.add("active");
   divLeft.append(itemName, editIcon);
   divRight.append(itemCounter);
   projectItem.style.borderLeftColor = project.color;

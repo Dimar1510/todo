@@ -2,8 +2,11 @@ import { compareAsc, format } from "date-fns";
 import { createDiv } from "../utils";
 import { checkTask, deleteTask } from "../functions";
 import { showDialog } from "./showDialog";
+import { showDialogDetails } from "./showDialogDetails";
+import Task from "../classes/Task";
+import Project from "../classes/Project";
 
-export const createCard = (task, project) => {
+export const createCard = (task: Task, project: Project) => {
   const card = createDiv("task-card");
   const divLeft = createDiv("card-left");
   const divRight = createDiv("card-right");
@@ -47,27 +50,31 @@ export const createCard = (task, project) => {
   return card;
 };
 
-const createCardCheckbox = (task) => {
+const createCardCheckbox = (task: Task) => {
   const checkbox = document.createElement("input");
   checkbox.type = "checkbox";
   checkbox.name = "card-checkbox";
-  task.done ? (checkbox.checked = true) : (checkbox.checked = false);
+  if (task.done) checkbox.checked = true;
+  else checkbox.checked = false;
   checkbox.addEventListener("change", () => {
-    checkTask(checkbox, task);
+    checkTask(checkbox.checked, task);
   });
   return checkbox;
 };
 
-const createCardTitle = (task) => {
+const createCardTitle = (task: Task) => {
   const title = document.createElement("span");
-  task.priority
-    ? (title.innerHTML = `<span class="material-symbols-outlined">Exclamation</span><span>${task.title}</span>`)
-    : (title.innerHTML = `<span>${task.title}</span>`);
-  if (task.done) title.lastElementChild.style.textDecoration = "line-through";
+  if (task.priority)
+    title.innerHTML = `<span class="material-symbols-outlined">Exclamation</span><span>${task.title}</span>`;
+  else title.innerHTML = `<span>${task.title}</span>`;
+  if (task.done && title.lastElementChild) {
+    const lastChild = title.lastElementChild as HTMLSpanElement;
+    lastChild.style.textDecoration = "line-through";
+  }
   return title;
 };
 
-function createCardDetailsBtn(task) {
+function createCardDetailsBtn(task: Task) {
   // const btnDetails = document.createElement('button');
   // btnDetails.textContent = 'details';
   const btnDetails = document.createElement("span");
@@ -77,7 +84,7 @@ function createCardDetailsBtn(task) {
   return btnDetails;
 }
 
-function createCardDate(task) {
+function createCardDate(task: Task) {
   const dueDate = createDiv("card-date");
   if (task.dueDate == "") {
     dueDate.textContent = "no date";
@@ -91,7 +98,7 @@ function createCardDate(task) {
   return dueDate;
 }
 
-function createCardEditBtn(task) {
+function createCardEditBtn(task: Task) {
   const edit = document.createElement("span");
   edit.classList.add("material-symbols-outlined");
   edit.innerHTML = "edit_square";
@@ -99,7 +106,7 @@ function createCardEditBtn(task) {
   return edit;
 }
 
-function createCardRemoveBtn(task, project) {
+function createCardRemoveBtn(task: Task, project: Project) {
   const remove = document.createElement("span");
   remove.classList.add("material-symbols-outlined");
   remove.innerHTML = "delete";

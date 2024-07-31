@@ -1,19 +1,20 @@
-import { createTask, projectList } from "../functions";
-import { checkValidity } from "../utils";
+import Task from "../classes/Task";
+import { createTask, editTask, hasTask, projectList } from "../functions";
+import { checkValidity, getElement } from "../utils";
 
 export const showDialog = (function () {
-  const dialogCreateTask = document.querySelector(".dialog-create");
-  const formCreateTask = document.querySelector("form");
-  const title = document.getElementById("form-title");
-  const details = document.getElementById("form-details");
-  const dueDate = document.getElementById("form-date");
-  const priority = document.getElementById("priority-select");
-  const btnSubmit = document.getElementById("btnSubmit");
-  const dialogTitle = document.querySelector(
+  const dialogCreateTask = getElement<HTMLDialogElement>(".dialog-create");
+  const formCreateTask = getElement<HTMLFormElement>("form");
+  const title = getElement<HTMLInputElement>("#form-title");
+  const details = getElement<HTMLInputElement>("#form-details");
+  const dueDate = getElement<HTMLInputElement>("#form-date");
+  const priority = getElement<HTMLInputElement>("#priority-select");
+  const btnSubmit = getElement<HTMLInputElement>("#btnSubmit");
+  const dialogTitle = getElement<HTMLHeadingElement>(
     ".dialog-create > .dialog-header > h2",
   );
-  const buttonClose = document.querySelector(
-    ".dialog-create > .dialog-header > span",
+  const buttonClose = getElement<HTMLButtonElement>(
+    ".dialog-create > .dialog-header > button",
   );
   buttonClose.onclick = () => {
     dialogCreateTask.close();
@@ -28,7 +29,8 @@ export const showDialog = (function () {
     priority.classList.remove("checked");
     dialogTitle.textContent = "New task";
     btnSubmit.textContent = "Create task";
-    createList(projectList);
+    formCreateTask.reset();
+    createList();
     btnSubmit.onclick = (e) => {
       if (!checkValidity(title)) {
         e.preventDefault();
@@ -46,18 +48,17 @@ export const showDialog = (function () {
     };
   };
 
-  const edit = function (task) {
+  const edit = function (task: Task) {
     dialogCreateTask.showModal();
     dialogTitle.textContent = "Edit task";
     btnSubmit.textContent = "Confirm edit";
     title.value = task.title;
     details.value = task.details;
     dueDate.value = task.dueDate;
-    task.priority
-      ? priority.classList.add("checked")
-      : priority.classList.remove("checked");
+    if (task.priority) priority.classList.add("checked");
+    else priority.classList.remove("checked");
     priority.checked = task.priority;
-    createList(projectList, task);
+    createList(task);
     btnSubmit.onclick = () => {
       const newProject = selectProject();
       const project = hasTask(task);
@@ -88,22 +89,25 @@ export const showDialog = (function () {
   return { create, edit };
 })();
 
-function createList(task) {
-  const projectSelect = document.getElementById("task-projects");
+function createList(task?: Task) {
+  const projectSelect = getElement<HTMLSelectElement>("#task-projects");
   projectSelect.innerHTML = "";
-  for (let project of projectList.projects) {
-    const option = document.createElement("option");
-    option.value = project;
+  for (const project of projectList.projects) {
+    const option: HTMLOptionElement = document.createElement("option");
+    option.value = project.name;
     option.text = project.name;
     option.style.color = project.color;
     projectSelect.add(option);
-    if (project === projectList.current || project.tasks.includes(task))
+    if (
+      project === projectList.current ||
+      (task && project.tasks.includes(task))
+    )
       option.selected = true;
   }
 }
 
 function selectProject() {
-  const projectSelect = document.getElementById("task-projects");
+  const projectSelect = getElement<HTMLSelectElement>("#task-projects");
   let selectedProjectIndex = 0;
   for (let i = 0; i < projectSelect.options.length; i++) {
     if (projectSelect.options[i].selected) selectedProjectIndex = i;

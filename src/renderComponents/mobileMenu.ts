@@ -1,6 +1,9 @@
+import { getElement } from "../utils";
+
 export const mobileMenu = (function () {
-  const menuBtn = document.querySelector(".hamburger");
-  const container = document.querySelector(".main-container");
+  const menuBtn = getElement<HTMLButtonElement>(".hamburger");
+  const container = getElement(".main-container");
+
   const hide = function () {
     container.classList.remove("show");
   };

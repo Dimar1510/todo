@@ -1,23 +1,29 @@
+import Task from "./Task";
+
 export default class Project {
-  constructor(name, color) {
+  public name: string;
+  public tasks: Task[];
+  public color: string;
+
+  constructor(name: string, color: string) {
     this.name = name;
     this.tasks = [];
     this.color = color;
   }
 
-  getName() {
+  getName(): string {
     return this.name;
   }
 
-  getTasks() {
+  getTasks(): Task[] {
     return this.tasks;
   }
 
-  addTask(task) {
+  addTask(task: Task) {
     this.tasks.push(task);
   }
 
-  deleteTask(task) {
+  deleteTask(task: Task) {
     const index = this.tasks.indexOf(task);
     this.tasks.splice(index, 1);
   }

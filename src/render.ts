@@ -4,12 +4,14 @@ import { createProjectItem } from "./renderComponents/createProjectItem";
 import { showDialog } from "./renderComponents/showDialog";
 import { createCard } from "./renderComponents/createCard";
 import { createSortSelector } from "./renderComponents/createSortSelector";
-import { createDiv } from "./utils";
+import { createDiv, getElement } from "./utils";
 import { showConfirmDeleteProject } from "./renderComponents/showConfirmDeleteProject";
 import { mobileMenu } from "./renderComponents/mobileMenu";
+import Task from "./classes/Task";
+import Project from "./classes/Project";
 
 export const Render = (function () {
-  const content = document.querySelector(".content");
+  const content = getElement(".content");
   const createFirstCard = function () {
     if (typeof projectList.current === "string") return;
     const card = createDiv("task-card");
@@ -26,7 +28,7 @@ export const Render = (function () {
     btnDeleteProject.innerHTML =
       '<span class="material-symbols-outlined">delete</span> <span>Delete project</span>';
     btnDeleteProject.onclick = () => {
-      for (let project of projectList.projects) {
+      for (const project of projectList.projects) {
         if (project === projectList.current) {
           showConfirmDeleteProject(project);
         }
@@ -37,67 +39,70 @@ export const Render = (function () {
     if (isDefault()) card.append(createSortSelector());
   };
 
-  const projectTitle = function (title) {
-    const titleDiv = document.querySelector(".project-title");
-    const titleColor = document.querySelector(".title-color");
+  const projectTitle = function (title?: string) {
+    const titleDiv = getElement(".project-title");
+    const titleColor = getElement<HTMLDivElement>(".title-color");
     if (!title) {
-      titleDiv.textContent = projectList.current.name;
-      titleColor.style.backgroundColor = projectList.current.color;
+      if (typeof projectList.current !== "string") {
+        titleDiv.textContent = projectList.current
+          ? projectList.current.name
+          : "";
+        titleColor.style.backgroundColor = projectList.current
+          ? projectList.current.color
+          : "";
+      }
     } else {
       titleDiv.textContent = title;
-      titleColor.style.backgroundColor = null;
+      titleColor.style.backgroundColor = "none";
     }
   };
 
   const updateCounter = function () {
-    const counterHome = document.querySelector(".item-home > .item-counter");
+    const counterHome = getElement(".item-home > .item-counter");
     let total = 0;
-    for (let project of projectList.projects) {
+    for (const project of projectList.projects) {
       total += getUndoneTasks(project);
     }
-    total === 0
-      ? counterHome.classList.remove("active")
-      : counterHome.classList.add("active");
-    counterHome.textContent = total;
+    if (total === 0) counterHome.classList.remove("active");
+    else counterHome.classList.add("active");
+    counterHome.textContent = total.toString();
 
-    const counterToday = document.querySelector(".item-today > .item-counter");
+    const counterToday = getElement(".item-today > .item-counter");
     let countToday = 0;
     const today = format(new Date(), "dd/MM/yy");
-    for (let project of projectList.projects) {
-      for (let task of project.tasks) {
+    for (const project of projectList.projects) {
+      for (const task of project.tasks) {
         if (task.dueDate == "") continue;
         if (format(task.dueDate, "dd/MM/yy") === today && !task.done) {
           countToday += 1;
         }
       }
     }
-    countToday === 0
-      ? counterToday.classList.remove("active")
-      : counterToday.classList.add("active");
-    counterToday.textContent = countToday;
+    if (countToday === 0) counterToday.classList.remove("active");
+    else counterToday.classList.add("active");
+    counterToday.textContent = countToday.toString();
 
-    const counterWeek = document.querySelector(".item-week > .item-counter");
+    const counterWeek = getElement(".item-week > .item-counter");
     let countWeek = 0;
     const thisWeek = format(new Date(), "w");
-    for (let project of projectList.projects) {
-      for (let task of project.tasks) {
+    for (const project of projectList.projects) {
+      for (const task of project.tasks) {
         if (task.dueDate == "") continue;
         if (format(task.dueDate, "w") === thisWeek && !task.done) {
           countWeek += 1;
         }
       }
     }
-    countWeek === 0
-      ? counterWeek.classList.remove("active")
-      : counterWeek.classList.add("active");
-    counterWeek.textContent = countWeek;
+    if (countWeek === 0) counterWeek.classList.remove("active");
+    else counterWeek.classList.add("active");
+    counterWeek.textContent = countWeek.toString();
   };
 
   const sidebar = function () {
-    const menuProjects = document.querySelector(".menu-projects");
-    const menuItemHome = document.querySelector(".item-home");
-    const menuItemToday = document.querySelector(".item-today");
-    const menuItemWeek = document.querySelector(".item-week");
+    const menuProjects = getElement(".menu-projects");
+    const menuItemHome = getElement<HTMLButtonElement>(".item-home");
+    const menuItemToday = getElement<HTMLButtonElement>(".item-today");
+    const menuItemWeek = getElement<HTMLButtonElement>(".item-week");
     const items = document.querySelectorAll(".item-name");
     // const notes = document.querySelector('.item-notes')
 
@@ -111,22 +116,23 @@ export const Render = (function () {
     });
 
     if (typeof projectList.current === "string") {
-      document
-        .querySelector(`.item-${projectList.current} > .item-name`)
-        .classList.add("active");
+      getElement(`.item-${projectList.current} > .item-name`).classList.add(
+        "active",
+      );
     }
-    if (isDefault()) menuItemHome.firstElementChild.classList.add("active");
+    if (isDefault()) menuItemHome.firstElementChild?.classList.add("active");
 
     menuItemHome.onclick = all;
     menuItemToday.onclick = today;
     menuItemWeek.onclick = week;
     menuProjects.innerHTML = "";
 
-    for (let project of projectList.projects) {
+    for (const project of projectList.projects) {
       menuProjects.append(createProjectItem(project));
     }
     // hide the 'default' project
-    menuProjects.removeChild(menuProjects.firstElementChild);
+    if (menuProjects.firstElementChild)
+      menuProjects.removeChild(menuProjects.firstElementChild);
 
     // for mobile
     const itemsOnMobile = document.querySelectorAll(".nav");
@@ -139,14 +145,14 @@ export const Render = (function () {
 
   const project = function () {
     content.innerHTML = "";
-    const cards = [];
+    const cards: { task: Task; project: Project }[] = [];
     createFirstCard();
     updateCounter();
     projectTitle();
     if (isDefault()) {
       projectTitle("TDL // All tasks");
-      for (let project of projectList.projects) {
-        for (let task of project.tasks) {
+      for (const project of projectList.projects) {
+        for (const task of project.tasks) {
           cards.push({ task, project });
         }
       }
@@ -156,33 +162,43 @@ export const Render = (function () {
         cards.sort((a) => (a.task.priority ? -1 : 1));
       // upcoming
       if (projectList.sorting === "date")
-        cards.sort((a, b) => {
-          compareAsc(a.task.dueDate, b.task.dueDate) < 0 ? -1 : 1;
-          if (a.task.dueDate === "") return -1;
-        });
+        cards.sort((a, b) =>
+          a.task.dueDate === ""
+            ? -1
+            : compareAsc(a.task.dueDate, b.task.dueDate) < 0
+              ? -1
+              : 1,
+        );
       // name
       if (projectList.sorting === "name")
         cards.sort((a, b) => (a.task.title < b.task.title ? -1 : 1));
 
       if (projectList.reverseOrder) cards.reverse();
 
-      for (let card of cards) {
+      for (const card of cards) {
         content.append(createCard(card.task, card.project));
       }
       sidebar();
       return;
     }
-    if (projectList.current === "today") {
+    if (
+      typeof projectList.current === "string" &&
+      projectList.current === "today"
+    ) {
       today();
       return;
     }
-    if (projectList.current === "week") {
+    if (
+      typeof projectList.current === "string" &&
+      projectList.current === "week"
+    ) {
       week();
       return;
     }
-    for (let task of projectList.current.tasks) {
-      content.append(createCard(task, projectList.current));
-    }
+    if (typeof projectList.current !== "string")
+      for (const task of projectList.current.tasks) {
+        content.append(createCard(task, projectList.current));
+      }
     if (content.childElementCount <= 1) {
       const noprojects = document.createElement("h3");
       noprojects.innerHTML = "There are no tasks here...<br>Lets add some!";
@@ -199,8 +215,8 @@ export const Render = (function () {
     projectList.current = "today";
     const today = format(new Date(), "dd/MM/yy");
     content.innerHTML = "";
-    for (let project of projectList.projects) {
-      for (let task of project.tasks) {
+    for (const project of projectList.projects) {
+      for (const task of project.tasks) {
         if (task.dueDate == "") continue;
         if (format(task.dueDate, "dd/MM/yy") === today) {
           content.append(createCard(task, project));
@@ -218,8 +234,8 @@ export const Render = (function () {
     projectList.current = "week";
     const thisWeek = format(new Date(), "w");
     content.innerHTML = "";
-    for (let project of projectList.projects) {
-      for (let task of project.tasks) {
+    for (const project of projectList.projects) {
+      for (const task of project.tasks) {
         if (task.dueDate == "") continue;
         if (format(task.dueDate, "w") === thisWeek)
           content.append(createCard(task, project));
