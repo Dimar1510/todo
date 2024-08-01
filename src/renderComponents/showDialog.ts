@@ -1,6 +1,7 @@
 import Task from "../classes/Task";
 import { createTask, editTask, hasTask, projectList } from "../functions";
 import { checkValidity, getElement } from "../utils";
+import "../styles/dialog.scss";
 
 export const showDialog = (function () {
   const dialogCreateTask = getElement<HTMLDialogElement>(".dialog-create");

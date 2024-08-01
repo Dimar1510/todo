@@ -1,6 +1,7 @@
 import { Render } from "./render";
 import { getMockData } from "./getMockData";
 import { clearAll, projectList } from "./functions";
+import "./styles/index.scss";
 const VERSION = "1.2";
 
 projectList.init();

@@ -9,6 +9,8 @@ import { showConfirmDeleteProject } from "./renderComponents/showConfirmDeletePr
 import { mobileMenu } from "./renderComponents/mobileMenu";
 import Task from "./classes/Task";
 import Project from "./classes/Project";
+import "./styles/content.scss";
+import "./styles/sidebar.scss";
 
 export const Render = (function () {
   const content = getElement(".content");
