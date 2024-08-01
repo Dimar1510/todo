@@ -1,3 +1,5 @@
+@import "./vars.scss";
+
 dialog {
   margin: auto;
   min-width: 250px;
@@ -6,7 +8,7 @@ dialog {
   padding: 1rem 1.5rem;
   border: none;
   box-shadow: 0px 0px 5px 2px #0ab6ab78;
-  background-color: var(--clr-light);
+  background-color: $clr-light;
   color: white;
 }
 
@@ -33,16 +35,16 @@ dialog input,
 dialog select,
 dialog textarea {
   padding: 0.2rem 1ch;
-  background-color: var(--clr-light);
-  color: var(--clr-text);
+  background-color: $clr-light;
+  color: $clr-text;
   border: 1px solid;
-  border-color: var(--clr-inactive);
+  border-color: $clr-inactive;
 }
 
 dialog input:focus,
 dialog textarea:focus {
   border: 1px solid;
-  border-color: var(--clr-text);
+  border-color: $clr-text;
   outline: none;
 }
 
@@ -71,7 +73,7 @@ dialog button {
 .priority-select {
   width: auto;
   height: auto;
-  border: 1px solid var(--clr-dark);
+  border: 1px solid $clr-dark;
   cursor: pointer;
   text-transform: uppercase;
   font-size: 0.8rem;
@@ -85,7 +87,7 @@ dialog button {
 
 .priority-select.checked {
   color: white;
-  background-color: var(--clr-dark);
+  background-color: $clr-dark;
 }
 
 @keyframes popout {
@@ -102,7 +104,7 @@ dialog button {
   justify-content: space-between;
   padding-bottom: 1rem;
   align-items: center;
-  color: var(--clr-dark);
+  color: $clr-dark;
 }
 
 .dialog-header > span {
@@ -123,12 +125,12 @@ dialog form {
 .details-grid {
   display: grid;
   grid-template-columns: auto 1fr;
-  color: var(--clr-dark);
+  color: $clr-dark;
   row-gap: 1rem;
 }
 
 .details-grid > li {
-  border-bottom: 1px solid var(--clr-inactive);
+  border-bottom: 1px solid $clr-inactive;
   padding-bottom: 0.5rem;
 }
 

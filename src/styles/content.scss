@@ -1,7 +1,9 @@
+@import "./vars.scss";
+
 .content {
   grid-column: 2/3;
   grid-row: 2/3;
-  background-color: var(--clr-white);
+  background-color: $clr-white;
   padding: 1rem 2rem;
   display: flex;
   flex-direction: column;
@@ -18,7 +20,7 @@
 }
 
 .content::-webkit-scrollbar-thumb {
-  background: var(--clr-accent);
+  background: $clr-accent;
   border-radius: 5px;
 }
 
@@ -27,14 +29,14 @@
 }
 
 .content > h3 {
-  color: var(--clr-dark);
+  color: $clr-dark;
   text-align: center;
   margin-top: 20vh;
 }
 
 .task-card {
   width: 100%;
-  background-color: var(--clr-light);
+  background-color: $clr-light;
   display: grid;
   grid-template-columns: 1fr 7ch min-content min-content;
   padding: 0.5rem 1rem;
@@ -60,7 +62,7 @@
 }
 
 .sortBtns span.active {
-  color: var(--clr-dark);
+  color: $clr-dark;
 }
 
 .more-btn {
@@ -102,7 +104,7 @@
   color: currentColor;
   width: 1em;
   height: 1em;
-  border: 1px solid var(--clr-dark);
+  border: 1px solid $clr-dark;
   border-radius: 0.15em;
   display: flex;
   align-items: center;
@@ -115,7 +117,7 @@
   height: 0.8em;
   transform: scale(0);
   transition: 0.1s transform ease-in-out;
-  background: var(--clr-dark);
+  background: $clr-dark;
   transform-origin: bottom left;
   clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
 }
@@ -138,21 +140,21 @@
 
 .card-right .material-symbols-outlined:hover,
 .sortBtns span:hover {
-  color: var(--clr-dark);
+  color: $clr-dark;
 }
 
 .task-card.done {
-  color: var(--clr-inactive);
+  color: $clr-inactive;
 }
 
 .task-card.done button {
-  color: var(--clr-inactive);
-  border-color: var(--clr-inactive);
+  color: $clr-inactive;
+  border-color: $clr-inactive;
 }
 
 .task-card.done button:hover {
   color: white;
-  background-color: var(--clr-inactive);
+  background-color: $clr-inactive;
 }
 
 /* Media */

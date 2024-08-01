@@ -1,7 +1,9 @@
+@import "./vars.scss";
+
 .sidebar {
   grid-column: 1/2;
   grid-row: 2/3;
-  background-color: var(--clr-light);
+  background-color: $clr-light;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -22,7 +24,7 @@
 }
 
 .menu-projects::-webkit-scrollbar-thumb {
-  background: var(--clr-accent);
+  background: $clr-accent;
   border-radius: 5px;
 }
 
@@ -69,7 +71,7 @@
   position: absolute;
   bottom: 5px;
   width: 70%;
-  border-bottom: var(--clr-dark) 1px solid;
+  border-bottom: $clr-dark 1px solid;
   animation: slidein 0.5s;
 }
 
@@ -102,13 +104,13 @@
 }
 
 .project-item span:hover {
-  color: var(--clr-dark);
+  color: $clr-dark;
 }
 
 .item-counter {
   height: 18px;
   width: 18px;
-  background-color: var(--clr-accent);
+  background-color: $clr-accent;
   border-radius: 50%;
   display: none;
   align-items: center;
@@ -155,10 +157,10 @@ ul > ul {
 .form-add-project input {
   width: 100%;
   padding: 5px;
-  background-color: var(--clr-light);
+  background-color: $clr-light;
   outline: none;
-  border: 1px solid var(--clr-text);
-  color: var(--clr-text);
+  border: 1px solid $clr-text;
+  color: $clr-text;
 }
 
 .btn-group {

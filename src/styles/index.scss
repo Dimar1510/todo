@@ -1,3 +1,5 @@
+@import "./vars.scss";
+
 *,
 *::before,
 *::after {
@@ -5,15 +7,6 @@
   padding: 0;
   box-sizing: border-box;
   list-style: none;
-}
-
-:root {
-  --clr-white: #151515;
-  --clr-light: #201f1f;
-  --clr-dark: #0ab6ab;
-  --clr-accent: #0c6561;
-  --clr-text: #e5e5e5;
-  --clr-inactive: #737373;
 }
 
 @font-face {
@@ -51,7 +44,7 @@ body {
   justify-content: center;
   align-items: center;
   background-color: #333;
-  color: var(--clr-text);
+  color: $clr-text;
   border: none;
 }
 
@@ -125,7 +118,7 @@ body {
   width: 30px;
   height: 2px;
   left: calc(50% - 15px);
-  background-color: var(--clr-text);
+  background-color: $clr-text;
   transition: transform 0.3s;
   transform: translateZ(0);
   content: "";
@@ -157,9 +150,9 @@ button {
   text-transform: uppercase;
   font-size: 0.6rem;
   padding: 0.3rem 0.5rem;
-  border: 1px solid var(--clr-dark);
+  border: 1px solid $clr-dark;
   background: none;
-  color: var(--clr-dark);
+  color: $clr-dark;
   font-weight: bold;
   border-radius: 0.2rem;
   cursor: pointer;
@@ -170,7 +163,7 @@ button {
 }
 
 button:hover {
-  background-color: var(--clr-dark);
+  background-color: $clr-dark;
   color: white;
 }
 
@@ -179,5 +172,5 @@ button:hover {
 }
 
 input.error:focus::placeholder {
-  color: var(--clr-dark);
+  color: $clr-dark;
 }
